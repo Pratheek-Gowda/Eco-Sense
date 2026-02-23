@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco-Sense | Intelligent Bio-Nano Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: all 0.5s ease; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .pulse { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+    <nav class="border-b border-slate-800 p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-leaf text-white"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">ECO-<span class="text-emerald-500">SENSE</span></span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="connection-status" class="text-xs font-medium px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    SENSOR ACTIVE
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 lg:p-10">
+        
+        <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div>
+                <h1 class="text-4xl font-bold text-white mb-2">Real-time Bio-Nano Analytics</h1>
+                <p class="text-slate-400">Monitoring Batch ID: <span class="text-slate-200 font-mono">B-240223-IND</span></p>
+            </div>
+            <button onclick="simulateDegradation()" class="px-6 py-3 bg-white text-black font-semibold rounded-xl hover:bg-emerald-500 hover:text-white transition-all shadow-lg">
+                <i class="fas fa-flask mr-2"></i> Simulate Freshness Drop
+            </button>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="glass p-6 rounded-3xl col-span-1 md:col-span-2 flex flex-col items-center justify-center relative overflow-hidden">
+                <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-4">Current Freshness Index</h3>
+                <div class="relative w-48 h-48">
+                    <svg class="w-full h-full" viewBox="0 0 36 36">
+                        <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path id="progress-ring" class="text-emerald-500 transition-all duration-1000" stroke-width="3" stroke-dasharray="98, 100" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span id="fresh-percent" class="text-5xl font-bold">98%</span>
+                        <span id="status-label" class="text-emerald-400 font-medium">OPTIMAL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-6 rounded-3xl flex flex-col justify-between">
+                <div>
+                    <i class="fas fa-wind text-sky-400 text-xl mb-4"></i>
+                    <h3 class="text-slate-400 text-sm font-medium">Ethylene Detection</h3>
+                </div>
+                <div>
+                    <p id="gas-level" class="text-3xl font-bold text-white">0.02 <span class="text-sm text-slate-500 font-normal">ppm</span></p>
+                    <p class="text-xs text-emerald-400 mt-1">Below Critical Threshold</p>
+                </div>
+            </div>
+
+            <div class="glass p-6 rounded-3xl flex flex-col justify-between">
+                <div>
+                    <i class="fas fa-thermometer-half text-orange-400 text-xl mb-4"></i>
+                    <h3 class="text-slate-400 text-sm font-medium">Internal Temperature</h3>
+                </div>
+                <div>
+                    <p class="text-3xl font-bold text-white">4.2°C</p>
+                    <p class="text-xs text-slate-500 mt-1">Controlled Storage</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass rounded-3xl overflow-hidden">
+            <div class="p-6 border-b border-slate-800">
+                <h3 class="font-bold">Estimated Shelf Life Analysis</h3>
+            </div>
+            <table class="w-full text-left">
+                <thead class="bg-slate-900/50 text-slate-500 text-xs uppercase">
+                    <tr>
+                        <th class="p-4">Molecular Indicator</th>
+                        <th class="p-4">Current Value</th>
+                        <th class="p-4">Baseline</th>
+                        <th class="p-4">Risk Level</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 text-sm">
+                    <tr>
+                        <td class="p-4 font-medium">Volatile Amines</td>
+                        <td class="p-4 text-slate-300">12.4 mg/N</td>
+                        <td class="p-4 text-slate-500">< 15.0</td>
+                        <td class="p-4"><span class="px-2 py-1 bg-emerald-500/10 text-emerald-500 rounded text-xs font-bold">LOW</span></td>
+                    </tr>
+                    <tr>
+                        <td class="p-4 font-medium">Bacterial Metabolic CO2</td>
+                        <td class="p-4 text-slate-300">420 ppm</td>
+                        <td class="p-4 text-slate-500">400-500</td>
+                        <td class="p-4"><span class="px-2 py-1 bg-emerald-500/10 text-emerald-500 rounded text-xs font-bold">STABLE</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        let isSpoiled = false;
+
+        function simulateDegradation() {
+            const ring = document.getElementById('progress-ring');
+            const percent = document.getElementById('fresh-percent');
+            const label = document.getElementById('status-label');
+            const gas = document.getElementById('gas-level');
+
+            if (!isSpoiled) {
+                // Change to spoiled
+                ring.style.strokeDasharray = "15, 100";
+                ring.classList.replace('text-emerald-500', 'text-red-500');
+                percent.innerText = "15%";
+                percent.classList.add('text-red-500');
+                label.innerText = "SPOILAGE DETECTED";
+                label.classList.replace('text-emerald-400', 'text-red-500');
+                gas.innerHTML = '4.85 <span class="text-sm text-slate-500 font-normal">ppm</span>';
+                isSpoiled = true;
+            } else {
+                // Reset to fresh
+                ring.style.strokeDasharray = "98, 100";
+                ring.classList.replace('text-red-500', 'text-emerald-500');
+                percent.innerText = "98%";
+                percent.classList.remove('text-red-500');
+                label.innerText = "OPTIMAL";
+                label.classList.replace('text-red-500', 'text-emerald-400');
+                gas.innerHTML = '0.02 <span class="text-sm text-slate-500 font-normal">ppm</span>';
+                isSpoiled = false;
+            }
+        }
+    </script>
+</body>
+</html>
