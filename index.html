@@ -42,16 +42,20 @@
             50% { top: 95%; opacity: 1; } 
         }
 
-        .data-stream {
-            mask-image: linear-gradient(to bottom, transparent, black, transparent);
-        }
-
         video { object-fit: cover; filter: saturate(0.5) contrast(1.1) brightness(0.8); }
 
-        .brand-gradient {
-            background: linear-gradient(to right, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
         }
     </style>
 </head>
@@ -62,8 +66,6 @@
         <div class="relative w-full max-w-sm aspect-square glass-card rounded-[3rem] overflow-hidden border-2 border-emerald-500/20">
             <div class="scan-laser"></div>
             <video id="video-feed" autoplay playsinline class="w-full h-full bg-slate-900"></video>
-            
-            <!-- HUD Elements -->
             <div class="absolute inset-0 border-[20px] border-black/20 pointer-events-none"></div>
             <div class="absolute inset-8 border border-white/10 rounded-2xl flex items-center justify-center">
                  <div class="w-48 h-48 border border-emerald-500/40 rounded-full animate-pulse"></div>
@@ -86,7 +88,7 @@
     <!-- MAIN UI -->
     <nav class="border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-4 cursor-pointer" onclick="window.location.href='https://pratheek.shop'">
                 <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-900/40">
                     <i class="fas fa-fingerprint text-white text-xl"></i>
                 </div>
@@ -97,9 +99,10 @@
             </div>
             
             <div class="hidden md:flex items-center gap-8 text-[10px] font-bold tracking-widest uppercase text-slate-500">
-                <a href="#" class="hover:text-emerald-400 transition-colors">Infrastructure</a>
-                <a href="#" class="hover:text-emerald-400 transition-colors">API Logs</a>
-                <a href="#" class="text-white border-b-2 border-emerald-500 pb-1">Analytics</a>
+                <a href="https://pratheek.shop" class="nav-link hover:text-emerald-400">Infrastructure</a>
+                <a href="#logs" class="nav-link hover:text-emerald-400">API Logs</a>
+                <a href="#" class="nav-link active text-white">Analytics</a>
+                <a href="https://pratheek.shop/contact.html" class="nav-link hover:text-emerald-400 border border-slate-800 px-4 py-1.5 rounded-full hover:border-emerald-500/50">Contact</a>
             </div>
 
             <button onclick="startCamera()" class="bg-white text-black px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all">
@@ -110,10 +113,9 @@
 
     <main class="max-w-7xl mx-auto px-6 py-12">
         
-        <!-- Dashboard Header -->
         <div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
             <div>
-                <h2 class="text-4xl font-extrabold text-white tracking-tight mb-2">Molecular Dashboard</h2>
+                <h2 class="text-4xl font-extrabold text-white tracking-tight mb-2 uppercase">Molecular Dashboard</h2>
                 <p class="text-slate-500 font-medium">Monitoring Node: <span class="text-emerald-500 font-mono">NODE-048-KARNATAKA</span></p>
             </div>
             <div class="flex gap-3">
@@ -129,8 +131,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            
-            <!-- Main Gauge -->
             <div class="lg:col-span-2 glass-card rounded-[3rem] p-12 flex flex-col items-center justify-center relative">
                 <div class="absolute top-10 right-10 flex gap-2">
                     <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -165,10 +165,7 @@
                 </div>
             </div>
 
-            <!-- Side Intelligence -->
             <div class="lg:col-span-2 flex flex-col gap-6">
-                
-                <!-- Molecular Data -->
                 <div class="glass-card p-8 rounded-[2.5rem]">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-8 border-l-2 border-emerald-500 pl-4">Bio-Chemical Analysis</h3>
                     <div class="space-y-8">
@@ -193,7 +190,6 @@
                     </div>
                 </div>
 
-                <!-- Traceability -->
                 <div class="glass-card p-8 rounded-[2.5rem] flex-grow relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-8 opacity-10">
                         <i class="fas fa-link text-6xl"></i>
@@ -212,15 +208,14 @@
                             <span>NANO-FILM SENSOR</span>
                             <span class="text-emerald-500">ACTIVE_AUTHENTICATED</span>
                         </div>
-                        <div class="flex justify-center pt-4">
-                            <span class="bg-emerald-500/10 text-emerald-500 px-4 py-1 rounded text-[8px] font-bold">BLOCKCHAIN SECURED BY PRATHEEK.SHOP</span>
+                        <div class="flex justify-center pt-4" onclick="window.location.href='https://pratheek.shop/contact.html'" style="cursor: pointer;">
+                            <span class="bg-emerald-500/10 text-emerald-500 px-4 py-1 rounded text-[8px] font-bold hover:bg-emerald-500/20 transition-all">BLOCKCHAIN SECURED BY PRATHEEK.SHOP</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Footer -->
         <footer class="mt-20 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
             <div class="text-center md:text-left">
                 <p class="text-xs font-bold text-white tracking-widest uppercase mb-2">PRATHEEK ENTERPRISES</p>
@@ -228,6 +223,7 @@
             </div>
             <div class="flex gap-12 text-[10px] font-bold text-slate-500 tracking-widest uppercase">
                 <a href="https://pratheek.shop" class="hover:text-emerald-400 transition-colors">pratheek.shop</a>
+                <a href="https://pratheek.shop/contact.html" class="hover:text-emerald-400 transition-colors">Contact Support</a>
                 <span>© 2026 Eco-Sense Division</span>
             </div>
         </footer>
@@ -248,17 +244,17 @@
                 });
                 video.srcObject = stream;
                 
-                // Simulation sequence
                 setTimeout(() => {
                     stopCamera();
                     toggleState();
                 }, 3500);
 
             } catch (err) {
-                console.warn("Camera access denied or unavailable.");
-                overlay.classList.add('hidden');
-                // Allow simulation even without camera for demo safety
-                toggleState();
+                console.warn("Camera access denied. Simulating sequence for demo...");
+                setTimeout(() => {
+                    stopCamera();
+                    toggleState();
+                }, 2000);
             }
         }
 
@@ -279,7 +275,6 @@
             const ammText = document.getElementById('amm-text');
 
             if (!isSpoiled) {
-                // SPREAD SPOILAGE
                 gauge.style.strokeDasharray = "12, 100";
                 gauge.classList.replace('stroke-emerald-500', 'stroke-red-500');
                 percent.innerHTML = '12<span class="text-2xl text-slate-500">%</span>';
@@ -299,7 +294,6 @@
                 
                 isSpoiled = true;
             } else {
-                // RESET TO OPTIMAL
                 gauge.style.strokeDasharray = "98, 100";
                 gauge.classList.replace('stroke-red-500', 'stroke-emerald-500');
                 percent.innerHTML = '98<span class="text-2xl text-slate-500">%</span>';
