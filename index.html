@@ -4,1008 +4,819 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eco-Sense Intelligence | Pratheek Enterprises</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
         :root {
             --primary: #10b981;
-            --primary-glow: rgba(16, 185, 129, 0.4);
+            --primary-glow: rgba(16, 185, 129, 0.35);
             --danger: #ef4444;
-            --danger-glow: rgba(239, 68, 68, 0.4);
+            --danger-glow: rgba(239, 68, 68, 0.35);
+            --warning: #f59e0b;
             --bg-dark: #040711;
         }
 
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(circle at 50% -20%, #172554 0%, #040711 80%),
-                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 50% -10%, #13243d 0%, transparent 60%),
+                radial-gradient(circle at 10% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 70%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
+                linear-gradient(180deg, #050813 0%, #03050c 100%);
             min-height: 100vh;
         }
 
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* Glassmorphism Styles */
         .glass-card {
-            background: rgba(11, 18, 33, 0.72);
+            background: rgba(13, 20, 36, 0.65);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.07);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.7);
         }
 
         .glass-card-hover {
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .glass-card-hover:hover {
-            border-color: rgba(16, 185, 129, 0.3);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 25px rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.28);
             transform: translateY(-2px);
+            box-shadow: 0 22px 50px -10px rgba(16, 185, 129, 0.12);
         }
 
-        /* Scan Laser & Reticle */
         .scan-laser {
-            position: absolute; 
-            width: 100%; 
+            position: absolute;
+            width: 100%;
             height: 3px;
-            background: linear-gradient(90deg, transparent, #10b981, #34d399, #10b981, transparent);
-            box-shadow: 0 0 25px #10b981, 0 0 8px #a7f3d0;
-            top: 0; 
-            animation: scanMove 2.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+            background: linear-gradient(90deg, transparent, #10b981, #6ee7b7, #10b981, transparent);
+            box-shadow: 0 0 22px #10b981, 0 0 10px #34d399;
+            top: 0;
+            animation: scanMove 2.6s ease-in-out infinite;
             z-index: 30;
         }
 
-        .scan-laser.danger-laser {
-            background: linear-gradient(90deg, transparent, #ef4444, #f87171, #ef4444, transparent);
-            box-shadow: 0 0 25px #ef4444, 0 0 8px #fca5a5;
+        @keyframes scanMove {
+            0%, 100% { top: 6%; opacity: 0.3; }
+            50% { top: 92%; opacity: 1; }
         }
 
-        @keyframes scanMove { 
-            0%, 100% { top: 6%; opacity: 0.3; } 
-            50% { top: 92%; opacity: 1; } 
-        }
-
-        .hud-corner {
+        .radar-sweep {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            border-color: #10b981;
-            pointer-events: none;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, rgba(16, 185, 129, 0.18) 0deg, transparent 90deg);
+            animation: radarRotate 3s linear infinite;
         }
 
-        /* Pulse glow animation */
-        @keyframes glowPulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.04); }
-        }
-        .animate-glow-pulse {
-            animation: glowPulse 4s infinite ease-in-out;
+        @keyframes radarRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
+        .pulse-beacon {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulseWave 2s infinite;
+        }
+
+        @keyframes pulseWave {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Custom Scrollbar for Terminal Logs */
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.5); }
+
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
             height: 6px;
         }
-        ::-webkit-scrollbar-track {
-            background: #060b17;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
             background: #10b981;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+            transition: transform 0.15s ease;
         }
-
-        .nav-link {
-            transition: all 0.25s ease;
-            position: relative;
-        }
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: #10b981;
-            box-shadow: 0 0 10px #10b981;
-            border-radius: 2px;
-        }
-
-        /* Print styles for certificate modal */
-        @media print {
-            body * { visibility: hidden; }
-            #printable-cert, #printable-cert * { visibility: visible; }
-            #printable-cert { position: fixed; left: 0; top: 0; width: 100%; height: 100%; }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
         }
     </style>
 </head>
 <body class="text-slate-300 min-h-screen selection:bg-emerald-500/30 selection:text-emerald-200">
 
-    <!-- TOAST NOTIFICATION CONTAINER -->
-    <div id="toast-container" class="fixed top-24 right-6 z-[10000] flex flex-col gap-3 pointer-events-none"></div>
+    <!-- HUD TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed top-24 right-6 z-[99999] flex flex-col gap-3 pointer-events-none"></div>
 
-    <!-- ================= CAMERA & SCANNER OVERLAY ================= -->
-    <div id="scanner-overlay" class="hidden fixed inset-0 z-[999] bg-[#020617]/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 sm:p-6 transition-all duration-300">
-        
-        <!-- Top HUD controls -->
-        <div class="w-full max-w-md flex justify-between items-center mb-4 px-2">
-            <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-                <span class="text-xs font-mono font-bold tracking-widest text-emerald-400 uppercase" id="scanner-status-text">Optical Sensor 01: Active</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <button onclick="switchCameraMode()" title="Flip Camera" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700/60 text-slate-300 hover:text-white hover:border-emerald-500/50 flex items-center justify-center text-xs transition">
-                    <i class="fas fa-camera-rotate"></i>
-                </button>
-                <button onclick="toggleScannerTorch()" id="torch-btn" title="Toggle Illuminator" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700/60 text-slate-300 hover:text-white hover:border-emerald-500/50 flex items-center justify-center text-xs transition">
-                    <i class="fas fa-bolt"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Scanner Viewport View -->
-        <div class="relative w-full max-w-sm aspect-square glass-card rounded-[2.5rem] overflow-hidden border-2 border-emerald-500/30 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
-            <div id="scan-laser-line" class="scan-laser"></div>
+    <!-- CAMERA / SCANNER MODAL OVERLAY -->
+    <div id="scanner-overlay" class="hidden fixed inset-0 z-[9999] bg-[#020617]/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 sm:p-6 transition-all duration-300">
+        <div class="relative w-full max-w-md aspect-square glass-card rounded-[2.5rem] overflow-hidden border border-emerald-500/30 shadow-[0_0_80px_rgba(16,185,129,0.15)]">
+            <div id="laser-bar" class="scan-laser"></div>
             
-            <!-- Video feed -->
-            <video id="video-feed" autoplay playsinline muted class="w-full h-full object-cover filter contrast-[1.1] brightness-90 bg-slate-950"></video>
+            <!-- Video feed with fallback simulator -->
+            <video id="video-feed" autoplay playsinline muted class="w-full h-full object-cover bg-slate-950"></video>
             
-            <!-- Fallback Canvas if camera restricted -->
-            <canvas id="camera-fallback-canvas" class="hidden absolute inset-0 w-full h-full bg-slate-950"></canvas>
-
-            <!-- Holographic HUD Overlays -->
-            <div class="hud-corner top-6 left-6 border-t-2 border-l-2"></div>
-            <div class="hud-corner top-6 right-6 border-t-2 border-r-2"></div>
-            <div class="hud-corner bottom-6 left-6 border-b-2 border-l-2"></div>
-            <div class="hud-corner bottom-6 right-6 border-b-2 border-r-2"></div>
-
-            <div class="absolute inset-10 border border-emerald-500/20 rounded-3xl flex items-center justify-center pointer-events-none">
-                <div class="w-40 h-40 border border-dashed border-emerald-400/40 rounded-full animate-spin" style="animation-duration: 18s;"></div>
-                <div class="absolute w-24 h-24 border border-emerald-500/30 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-crosshairs text-emerald-400/60 text-2xl animate-pulse"></i>
+            <div id="video-fallback" class="hidden absolute inset-0 bg-gradient-to-b from-slate-950 via-[#07131e] to-slate-950 flex flex-col items-center justify-center p-6 text-center">
+                <div class="relative w-36 h-36 mb-4 flex items-center justify-center">
+                    <div class="radar-sweep"></div>
+                    <i id="sample-icon" class="fas fa-apple-whole text-5xl text-emerald-400 drop-shadow-[0_0_20px_rgba(16,185,129,0.6)]"></i>
                 </div>
+                <p class="text-xs uppercase font-bold tracking-widest text-emerald-400">Optical Sensor Engaged</p>
+                <p id="fallback-status" class="text-[10px] text-slate-400 mt-1 mono">SYNTHESIZING SPECTROGRAPHIC IMAGING</p>
             </div>
 
-            <!-- Spectral Frequency live bar overlay at bottom -->
-            <div class="absolute bottom-4 left-6 right-6 h-8 bg-black/60 backdrop-blur-md rounded-xl border border-white/10 px-3 flex items-center justify-between text-[9px] font-mono text-emerald-400">
-                <span>VOC SPECTRUM</span>
-                <div class="flex items-end gap-1 h-4">
-                    <span class="w-1 bg-emerald-500 animate-pulse h-3"></span>
-                    <span class="w-1 bg-emerald-500 animate-pulse h-4" style="animation-delay: 0.1s"></span>
-                    <span class="w-1 bg-emerald-500 animate-pulse h-2" style="animation-delay: 0.2s"></span>
-                    <span class="w-1 bg-emerald-500 animate-pulse h-3.5" style="animation-delay: 0.3s"></span>
-                    <span class="w-1 bg-emerald-500 animate-pulse h-1.5" style="animation-delay: 0.4s"></span>
+            <!-- Optical HUD Reticle & Corner Brackets -->
+            <div class="absolute inset-0 border-[16px] border-black/40 pointer-events-none"></div>
+            
+            <!-- Reticle Crosshairs -->
+            <div class="absolute inset-8 border border-white/10 rounded-2xl flex items-center justify-center pointer-events-none">
+                <div class="w-48 h-48 border border-emerald-500/30 rounded-full animate-pulse flex items-center justify-center">
+                    <div class="w-24 h-24 border border-dashed border-emerald-400/50 rounded-full animate-spin" style="animation-duration: 12s;"></div>
                 </div>
-                <span id="spectral-freq-label">540.2 THz</span>
+                <!-- Precision Markers -->
+                <div class="absolute top-2 left-2 text-[9px] mono text-emerald-500/70">SPEC_λ: 780nm</div>
+                <div class="absolute bottom-2 right-2 text-[9px] mono text-emerald-500/70">CALIB: 99.4%</div>
+                <div class="absolute top-2 right-2 text-[9px] mono text-emerald-500/70">ISO_800</div>
+                <div class="absolute bottom-2 left-2 text-[9px] mono text-emerald-500/70">VOC_TRACE</div>
+            </div>
+
+            <!-- Live Spectral Reading HUD Overlay -->
+            <div class="absolute bottom-4 left-4 right-4 glass-card px-4 py-2.5 rounded-xl border border-white/10 flex items-center justify-between pointer-events-none">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span id="scan-step-label" class="text-[10px] mono font-bold uppercase text-emerald-300">Phase 1: Surface Spectrum</span>
+                </div>
+                <span id="scan-countdown" class="text-xs mono font-extrabold text-white">03.5s</span>
             </div>
         </div>
         
-        <!-- Live Analysis Steps -->
-        <div class="mt-6 text-center space-y-2 max-w-xs">
+        <div class="mt-6 text-center space-y-2 max-w-sm">
             <div class="flex items-center justify-center gap-2 text-emerald-400 font-bold tracking-[0.3em] uppercase text-xs">
-                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
-                <span id="scanner-step-title">Detecting Nano-Film Tags</span>
+                <i class="fas fa-microchip animate-pulse"></i>
+                Molecular Resonance Scanner
             </div>
-            <p id="scanner-step-desc" class="text-slate-400 font-mono text-[11px]">Calibrating spectrophotometer against ambient volatile layer...</p>
-
-            <!-- Progress Bar -->
-            <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden border border-white/5 mt-3">
-                <div id="scan-progress-bar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 w-0 transition-all duration-300"></div>
-            </div>
+            <p class="text-slate-400 text-xs font-normal">Direct camera or sensor lens toward organic produce packaging.</p>
         </div>
 
-        <!-- Buttons -->
-        <div class="flex gap-4 mt-8">
-            <button onclick="stopCamera()" class="px-6 py-2.5 bg-slate-900/90 border border-slate-700 rounded-full text-xs font-bold tracking-widest text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
-                ABORT SCAN
+        <div class="flex items-center gap-4 mt-6">
+            <button onclick="switchCameraFacing()" class="px-5 py-2.5 glass-card rounded-full text-xs font-bold text-slate-300 hover:text-white hover:border-emerald-500/40 transition-all flex items-center gap-2">
+                <i class="fas fa-camera-rotate"></i> Flip Lens
             </button>
-            <button onclick="completeScanInstant()" class="px-6 py-2.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 rounded-full text-xs font-bold tracking-widest hover:bg-emerald-500/30 transition-all">
-                SIMULATE RESULT
+            <button onclick="stopCamera()" class="px-6 py-2.5 bg-rose-500/10 border border-rose-500/40 text-rose-300 rounded-full text-xs font-bold tracking-wider hover:bg-rose-500/20 transition-all flex items-center gap-2">
+                <i class="fas fa-xmark"></i> Abort Scan
             </button>
         </div>
     </div>
 
-
-    <!-- ================= BLOCKCHAIN PROVENANCE MODAL ================= -->
-    <div id="blockchain-modal" class="hidden fixed inset-0 z-[990] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="glass-card max-w-xl w-full rounded-3xl p-6 sm:p-8 border border-emerald-500/30 relative">
-            <button onclick="closeBlockchainModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-lg">
-                <i class="fas fa-xmark"></i>
-            </button>
-
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                    <i class="fas fa-cubes text-lg"></i>
-                </div>
-                <div>
-                    <h3 class="text-base font-extrabold text-white uppercase tracking-tight">Cryptographic Ledger Ledger-048</h3>
-                    <p class="text-[10px] font-mono text-emerald-400">Verified via pratheek.app Consensus Network</p>
-                </div>
-            </div>
-
-            <!-- Ledger Details -->
-            <div class="space-y-3 font-mono text-xs">
-                <div class="bg-black/40 p-3 rounded-xl border border-white/5 flex justify-between items-center">
-                    <span class="text-slate-400">Smart Contract:</span>
-                    <span class="text-emerald-400 select-all font-bold">0xPratheek784...EcoSense9</span>
-                </div>
-                <div class="bg-black/40 p-3 rounded-xl border border-white/5 flex justify-between items-center">
-                    <span class="text-slate-400">Block Height:</span>
-                    <span class="text-white">#19,842,109</span>
-                </div>
-                <div class="bg-black/40 p-3 rounded-xl border border-white/5 flex justify-between items-center">
-                    <span class="text-slate-400">Merkle Root:</span>
-                    <span class="text-slate-300 select-all">0x7d28...f41e0a98</span>
-                </div>
-            </div>
-
-            <!-- Custody Chain -->
-            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-6 mb-3 border-l-2 border-emerald-500 pl-3">Chain of Custody Timeline</h4>
-            <div class="space-y-3 text-xs border-l-2 border-slate-800 ml-3 pl-4">
-                <div class="relative">
-                    <span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <p class="text-white font-bold">Harvest & Nano-Film Applied</p>
-                    <p class="text-[10px] text-slate-500 font-mono">Mandya Agro Cluster 04 • Nov 6, 2026 06:30 IST</p>
-                </div>
-                <div class="relative">
-                    <span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <p class="text-white font-bold">Cold-Chain Transit Ingested (4.2°C)</p>
-                    <p class="text-[10px] text-slate-500 font-mono">Fleet Unit KA-04-E-8812 • Nov 7, 2026 14:15 IST</p>
-                </div>
-                <div class="relative">
-                    <span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    <p class="text-white font-bold">Bangalore Metro Node Inspection</p>
-                    <p class="text-[10px] text-slate-500 font-mono">Pratheek Node-048 Karnataka • CURRENT STATUS</p>
-                </div>
-            </div>
-
-            <div class="mt-8 flex justify-between items-center pt-4 border-t border-white/5">
-                <a href="https://pratheek.app" target="_blank" class="text-xs text-emerald-400 font-bold hover:underline flex items-center gap-1.5">
-                    <span>Inspect on pratheek.app</span>
-                    <i class="fas fa-external-link-alt text-[10px]"></i>
-                </a>
-                <button onclick="copyLedgerHash()" class="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-xl text-xs font-bold border border-emerald-500/30 transition">
-                    <i class="fas fa-copy mr-1"></i> Copy Ledger Hash
-                </button>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ================= LIVE API / TELEMETRY LOGS DRAWER ================= -->
-    <div id="logs-modal" class="hidden fixed inset-0 z-[990] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="glass-card max-w-3xl w-full rounded-3xl p-6 sm:p-8 border border-white/10 flex flex-col max-h-[85vh]">
-            <div class="flex justify-between items-center pb-4 border-b border-white/5">
-                <div class="flex items-center gap-3">
-                    <div class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></div>
-                    <h3 class="text-sm font-extrabold text-white tracking-widest uppercase">Live Sensor & Node Stream</h3>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="clearLogs()" class="px-3 py-1 bg-slate-800 text-slate-300 hover:text-white rounded-lg text-[10px] font-bold">Clear</button>
-                    <button onclick="closeLogsModal()" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-sm">
-                        <i class="fas fa-xmark"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Terminal logs area -->
-            <div id="terminal-logs" class="my-4 font-mono text-[11px] text-slate-400 bg-black/60 p-4 rounded-2xl overflow-y-auto space-y-1.5 flex-grow border border-white/5 leading-relaxed">
-                <!-- Log entries injected here -->
-            </div>
-
-            <div class="flex flex-col sm:flex-row justify-between items-center text-[10px] text-slate-500 font-mono gap-2 pt-2">
-                <span>PROTOCOL: SECURE-WEBSOCKET / NODE-048</span>
-                <span class="text-emerald-500">ENDPOINT: api.pratheek.app/v2/telemetry</span>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ================= CERTIFICATE EXPORT MODAL ================= -->
-    <div id="cert-modal" class="hidden fixed inset-0 z-[990] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div id="printable-cert" class="glass-card max-w-xl w-full rounded-3xl p-8 border border-emerald-500/30 text-white relative">
-            <button onclick="closeCertModal()" class="print:hidden absolute top-6 right-6 text-slate-400 hover:text-white text-lg">
-                <i class="fas fa-xmark"></i>
-            </button>
-
-            <div class="flex justify-between items-start border-b border-white/10 pb-6 mb-6">
-                <div>
-                    <div class="flex items-center gap-2 mb-1">
-                        <i class="fas fa-shield-halved text-emerald-400 text-xl"></i>
-                        <h2 class="text-base font-extrabold uppercase tracking-tight">Eco-Sense Quality Certificate</h2>
-                    </div>
-                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Issued by Pratheek Enterprises • pratheek.app</p>
-                </div>
-                <div class="text-right font-mono text-[10px] text-emerald-400">
-                    <p>VERIFIED BATCH</p>
-                    <p class="text-white font-bold" id="cert-date">2026-11-09</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 text-xs font-mono mb-6">
-                <div class="bg-black/30 p-3 rounded-xl border border-white/5">
-                    <p class="text-[9px] text-slate-500 uppercase">Target Commodity</p>
-                    <p class="text-sm font-bold text-emerald-400" id="cert-commodity">Robusta Banana Cluster</p>
-                </div>
-                <div class="bg-black/30 p-3 rounded-xl border border-white/5">
-                    <p class="text-[9px] text-slate-500 uppercase">Purity / Safety Index</p>
-                    <p class="text-sm font-bold text-white" id="cert-safety-score">98.0% (Grade A)</p>
-                </div>
-                <div class="bg-black/30 p-3 rounded-xl border border-white/5">
-                    <p class="text-[9px] text-slate-500 uppercase">Ethylene Volatiles</p>
-                    <p class="text-white font-bold" id="cert-ethylene">0.02 ppm</p>
-                </div>
-                <div class="bg-black/30 p-3 rounded-xl border border-white/5">
-                    <p class="text-[9px] text-slate-500 uppercase">Ammonia (NH₃)</p>
-                    <p class="text-white font-bold" id="cert-ammonia">1.4 ppb</p>
-                </div>
-            </div>
-
-            <div class="border-t border-white/10 pt-4 flex justify-between items-center text-[10px] font-mono text-slate-400">
-                <div>
-                    <p class="text-white font-bold">DIGITAL SIGNATURE</p>
-                    <p class="text-[8px] text-emerald-400">SHA-256: 8f92b7c61d09e...44a7</p>
-                </div>
-                <div class="print:hidden flex gap-3">
-                    <button onclick="window.print()" class="px-4 py-2 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400 transition text-xs">
-                        <i class="fas fa-print mr-1"></i> Print / Save PDF
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ================= MAIN NAVIGATION ================= -->
-    <nav class="border-b border-white/5 bg-slate-950/70 backdrop-blur-xl sticky top-0 z-50">
+    <!-- MAIN NAVIGATION -->
+    <nav class="border-b border-white/5 bg-[#050813]/70 backdrop-blur-xl sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex justify-between items-center">
             
-            <!-- Logo & Brand -->
-            <div class="flex items-center gap-3.5 cursor-pointer" onclick="window.open('https://pratheek.app', '_blank')">
-                <div class="relative w-11 h-11 bg-gradient-to-br from-emerald-400 via-emerald-600 to-teal-800 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-950/60 border border-emerald-400/30 group">
-                    <i class="fas fa-fingerprint text-white text-xl group-hover:scale-110 transition-transform"></i>
-                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-950 animate-ping"></span>
+            <!-- Brand -->
+            <div class="flex items-center gap-3.5 cursor-pointer group" onclick="window.open('https://pratheek.app', '_blank')">
+                <div class="relative w-11 h-11 bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-700 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-all duration-300">
+                    <i class="fas fa-dna text-white text-lg group-hover:rotate-45 transition-transform duration-500"></i>
+                    <div class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-slate-950 pulse-beacon"></div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-lg font-black tracking-tighter text-white leading-none">ECO-SENSE</h1>
-                        <span class="bg-emerald-500/10 text-emerald-400 text-[9px] font-mono px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">v3.4-PRO</span>
+                        <h1 class="text-lg font-black tracking-tight text-white leading-none">ECO-SENSE</h1>
+                        <span class="text-[9px] bg-emerald-500/15 text-emerald-400 font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-500/30">v4.2-PRO</span>
                     </div>
-                    <p class="text-[9px] font-bold text-emerald-500 tracking-[0.22em] uppercase mt-1">Pratheek Enterprises • pratheek.app</p>
+                    <p class="text-[10px] font-semibold text-emerald-400/90 tracking-[0.2em] uppercase mt-1">Pratheek Enterprises</p>
                 </div>
             </div>
             
-            <!-- Desktop Nav items -->
+            <!-- Center Nav Links -->
             <div class="hidden lg:flex items-center gap-8 text-[11px] font-bold tracking-widest uppercase text-slate-400">
-                <a href="https://pratheek.app" target="_blank" class="nav-link hover:text-emerald-400">Infrastructure</a>
-                <button onclick="openLogsModal()" class="nav-link hover:text-emerald-400 flex items-center gap-1.5 uppercase">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    API Logs
-                </button>
-                <button onclick="openCertModal()" class="nav-link hover:text-emerald-400 uppercase">Compliance Cert</button>
-                <a href="#dashboard" class="nav-link active text-white">Analytics</a>
-                <a href="https://pratheek.app/contact.html" target="_blank" class="nav-link hover:text-emerald-400 border border-slate-700 hover:border-emerald-500/60 px-4 py-1.5 rounded-full transition-all">Support</a>
+                <a href="#dashboard" class="text-emerald-400 relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-emerald-400">Telemetry</a>
+                <a href="#spectroscopy" class="hover:text-emerald-300 transition-colors">Spectrogram</a>
+                <a href="#provenance" class="hover:text-emerald-300 transition-colors">Chain Audit</a>
+                <a href="#apilogs" class="hover:text-emerald-300 transition-colors">Node Logs</a>
+                <a href="https://pratheek.app" target="_blank" class="hover:text-emerald-300 transition-colors">Infrastructure</a>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- Right Action Tools -->
             <div class="flex items-center gap-3">
-                <!-- Sound synth toggle -->
-                <button id="sound-btn" onclick="toggleAudio()" title="Sound Effects Toggle" class="w-10 h-10 rounded-2xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-emerald-400 flex items-center justify-center transition">
-                    <i class="fas fa-volume-high" id="sound-icon"></i>
+                <!-- Audio Synthesizer Toggle -->
+                <button id="sound-btn" onclick="toggleAudio()" title="Toggle UI Audio Synth" class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-slate-400 hover:text-emerald-400 transition-all">
+                    <i id="sound-icon" class="fas fa-volume-high text-xs"></i>
                 </button>
 
-                <!-- Scan Trigger -->
-                <button onclick="startCamera()" class="relative group overflow-hidden bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-extrabold px-5 sm:px-6 py-2.5 rounded-2xl text-xs uppercase tracking-widest shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
-                    <i class="fas fa-barcode text-sm"></i>
-                    <span>New Scan</span>
+                <!-- Fast Preset Trigger -->
+                <button onclick="startCamera()" class="relative group overflow-hidden bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black px-5 sm:px-6 py-2.5 rounded-full text-xs uppercase tracking-wider hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all flex items-center gap-2 active:scale-95">
+                    <i class="fas fa-barcode text-xs"></i>
+                    <span>Execute Scan</span>
                 </button>
             </div>
         </div>
     </nav>
 
-
-    <!-- ================= MAIN DASHBOARD BODY ================= -->
-    <main id="dashboard" class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         
-        <!-- Commodity Presets Switcher Bar -->
-        <div class="mb-8 glass-card rounded-2xl p-3 flex flex-wrap items-center justify-between gap-4 border border-white/5">
-            <div class="flex items-center gap-2 px-2">
-                <i class="fas fa-flask text-emerald-400 text-sm"></i>
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Specimen Target:</span>
-            </div>
-            <div class="flex flex-wrap gap-2" id="preset-container">
-                <button onclick="selectPreset('banana')" data-preset="banana" class="preset-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-emerald-500 text-black">
-                    🍌 Robusta Banana
-                </button>
-                <button onclick="selectPreset('mango')" data-preset="mango" class="preset-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:text-white">
-                    🥭 Alphonso Mango
-                </button>
-                <button onclick="selectPreset('salmon')" data-preset="salmon" class="preset-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:text-white">
-                    🐟 Fresh Salmon
-                </button>
-                <button onclick="selectPreset('milk')" data-preset="milk" class="preset-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:text-white">
-                    🥛 Pasteurized Milk
-                </button>
-            </div>
-            <div class="flex items-center gap-2">
-                <button onclick="toggleAnomalyState()" id="anomaly-btn" class="px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-900 border border-slate-700 text-slate-300 hover:border-red-500/60 hover:text-red-400 transition flex items-center gap-1.5">
-                    <i class="fas fa-triangle-exclamation text-[10px]"></i>
-                    <span>Simulate Spoilage Anomaly</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Header / Telemetry Status Info -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
+        <!-- HEADER / SYSTEM BANNER -->
+        <div class="flex flex-col lg:flex-row justify-between lg:items-end gap-6 mb-8 border-b border-white/5 pb-8">
             <div>
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        Decentralized Bio-Telemetry Node
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-400 rounded-full animate-ping"></span>
+                        EDGE SPECTROMETER ACTIVE
                     </span>
-                    <span class="text-xs text-slate-500 font-mono">FW: v4.8.2-bio</span>
+                    <span class="text-[11px] text-slate-500 mono font-semibold">KARNATAKA REGION NODE-048</span>
                 </div>
-                <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight uppercase">Molecular Dashboard</h2>
-                <p class="text-slate-400 text-sm font-medium mt-1">Active Gateway: <span class="text-emerald-400 font-mono font-bold">NODE-048-KARNATAKA</span> (Sub-Cluster South 2)</p>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">Molecular Freshness Engine</h2>
+                <p class="text-slate-400 text-xs sm:text-sm mt-1 max-w-2xl font-normal">
+                    Real-time quantum nanosensor array measuring volatile organic compounds (VOCs), ethylene gas progression, and bacterial degradation indices.
+                </p>
             </div>
 
-            <!-- Top quick telemetry widgets -->
-            <div class="grid grid-cols-3 gap-3 w-full md:w-auto">
-                <div class="glass-card px-4 py-3 rounded-2xl border-emerald-500/20 text-center">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Node Latency</p>
-                    <p class="text-base sm:text-lg font-mono font-bold text-emerald-400" id="stat-latency">12ms</p>
+            <!-- Quick Telemetry Badges -->
+            <div class="flex flex-wrap gap-2.5 sm:gap-3">
+                <div class="glass-card px-4 py-2.5 rounded-2xl border-emerald-500/20">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Edge Ping</p>
+                    <p class="text-sm font-black mono text-emerald-400 flex items-center gap-1.5">
+                        <i class="fas fa-bolt text-[10px]"></i> 12.4 ms
+                    </p>
                 </div>
-                <div class="glass-card px-4 py-3 rounded-2xl text-center">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Node Uptime</p>
-                    <p class="text-base sm:text-lg font-mono font-bold text-white">99.98%</p>
+                <div class="glass-card px-4 py-2.5 rounded-2xl">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Confidence</p>
+                    <p class="text-sm font-black mono text-white">99.82%</p>
                 </div>
-                <div class="glass-card px-4 py-3 rounded-2xl text-center cursor-pointer hover:border-emerald-500/40 transition" onclick="openBlockchainModal()">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Consensus</p>
-                    <p class="text-base sm:text-lg font-mono font-bold text-emerald-400 flex items-center justify-center gap-1">
-                        <i class="fas fa-shield text-xs"></i> L1 Synced
+                <div class="glass-card px-4 py-2.5 rounded-2xl">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cloud Sync</p>
+                    <p class="text-sm font-black mono text-teal-400 flex items-center gap-1">
+                        <i class="fas fa-shield-halved text-[10px]"></i> pratheek.app
                     </p>
                 </div>
             </div>
         </div>
 
-        <!-- ================= MAIN GRID ================= -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- INTERACTIVE SPECIMEN SELECTOR -->
+        <div class="glass-card p-4 sm:p-5 rounded-3xl mb-8 flex flex-col md:flex-row items-center justify-between gap-4 border border-white/5">
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
+                    <i class="fas fa-basket-shopping text-sm"></i>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider">Target Produce Specimen</h4>
+                    <p class="text-[10px] text-slate-400">Select active SKU or test presets to evaluate response algorithms.</p>
+                </div>
+            </div>
+
+            <!-- Preset Buttons -->
+            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                <button onclick="loadSamplePreset('banana-fresh')" class="sample-preset-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold glass-card border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10 transition-all flex items-center gap-2">
+                    <i class="fas fa-check-circle text-[10px]"></i> Organic Banana (Fresh)
+                </button>
+                <button onclick="loadSamplePreset('avocado-ripe')" class="sample-preset-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold glass-card text-slate-300 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2">
+                    <i class="fas fa-clock text-[10px] text-amber-400"></i> Hass Avocado (Ripe)
+                </button>
+                <button onclick="loadSamplePreset('salmon-spoiled')" class="sample-preset-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold glass-card text-slate-300 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2">
+                    <i class="fas fa-triangle-exclamation text-[10px] text-rose-400"></i> Atlantic Salmon (Decayed)
+                </button>
+                <button onclick="loadSamplePreset('milk-fresh')" class="sample-preset-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold glass-card text-slate-300 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2">
+                    <i class="fas fa-droplet text-[10px] text-blue-400"></i> Dairy Whole Milk
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN GRID DASHBOARD -->
+        <div id="dashboard" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            <!-- Left 7 columns: Molecular Radial Gauge + Realtime Spectrogram -->
-            <div class="lg:col-span-7 flex flex-col gap-6">
+            <!-- COLUMN 1 & 2: PRIMARY GAUGE & SENSOR HEALTH (5 COLS) -->
+            <div class="lg:col-span-5 flex flex-col gap-6">
                 
-                <!-- Main Radial Freshness Gauge Card -->
-                <div class="glass-card rounded-[2.5rem] p-8 sm:p-10 flex flex-col items-center justify-center relative overflow-hidden">
-                    
-                    <!-- Top Status Indicators -->
+                <!-- Circular Radial Gauge Card -->
+                <div class="glass-card rounded-[2.8rem] p-6 sm:p-8 flex flex-col items-center justify-between relative overflow-hidden border border-white/10">
+                    <!-- Background ambient ring glow -->
+                    <div id="ambient-glow" class="absolute -top-24 -left-24 w-72 h-72 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none transition-all duration-1000"></div>
+
+                    <!-- Top status ribbon -->
                     <div class="w-full flex justify-between items-center mb-4">
-                        <span class="text-[10px] font-mono uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
-                            <i class="fas fa-atom text-emerald-400"></i> Freshness Index Index-V3
-                        </span>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="node-led"></span>
-                            <span class="text-[10px] font-mono text-slate-400 font-bold" id="calibration-label">CALIBRATED</span>
+                        <div class="flex items-center gap-2">
+                            <span id="health-pip" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span id="category-badge" class="text-[10px] mono uppercase font-bold tracking-widest text-emerald-400">
+                                Class A: Consumable
+                            </span>
                         </div>
+                        <span class="text-[10px] mono text-slate-500 uppercase">CAL_ID #8902</span>
                     </div>
 
-                    <!-- SVG Circular Gauge with Glow -->
-                    <div class="relative w-64 h-64 sm:w-72 sm:h-72 my-4 flex items-center justify-center">
-                        <div class="absolute inset-0 rounded-full bg-emerald-500/5 filter blur-3xl" id="gauge-glow"></div>
-                        
-                        <svg class="w-full h-full -rotate-90 transform drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" viewBox="0 0 36 36">
+                    <!-- SVG Circular Radial Meter -->
+                    <div class="relative w-64 h-64 sm:w-72 sm:h-72 my-4">
+                        <svg class="w-full h-full -rotate-90" viewBox="0 0 200 200">
                             <!-- Background Track -->
-                            <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-900/80" stroke-width="2.2"></circle>
-                            <!-- Secondary Tick Ring -->
-                            <circle cx="18" cy="18" r="14" fill="none" class="stroke-slate-800/40" stroke-width="0.75" stroke-dasharray="1, 3"></circle>
-                            <!-- Dynamic Value Ring -->
-                            <circle id="gauge" cx="18" cy="18" r="16" fill="none" 
-                                    class="stroke-emerald-500 transition-all duration-1000 ease-out" 
-                                    stroke-width="2.5" 
-                                    stroke-dasharray="98, 100" 
-                                    stroke-linecap="round"></circle>
+                            <circle cx="100" cy="100" r="82" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"></circle>
+                            <!-- Secondary sub-ticks -->
+                            <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="2, 6"></circle>
+                            <!-- Active Value Circle -->
+                            <circle id="gauge-circle" cx="100" cy="100" r="82" fill="none" 
+                                    stroke="#10b981" 
+                                    stroke-width="12" 
+                                    stroke-dasharray="515.22" 
+                                    stroke-dashoffset="10.3" 
+                                    stroke-linecap="round"
+                                    class="transition-all duration-1000 ease-out"
+                                    style="filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.45));">
+                            </circle>
                         </svg>
 
-                        <!-- Centered Data Display -->
-                        <div class="absolute inset-0 flex flex-col items-center justify-center select-none text-center p-4">
-                            <div class="flex items-baseline justify-center">
-                                <span id="percent-val" class="text-6xl sm:text-7xl font-black tracking-tighter text-white transition-colors duration-500">98</span>
-                                <span class="text-2xl font-bold text-slate-400 ml-0.5">%</span>
+                        <!-- Centered Digital Metrics Display -->
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                            <span class="text-[10px] font-bold text-slate-400 tracking-[0.3em] uppercase mb-1">Index Score</span>
+                            <div class="flex items-baseline">
+                                <span id="percent-val" class="text-7xl sm:text-8xl font-black tracking-tighter text-white drop-shadow-md">98</span>
+                                <span class="text-2xl font-bold text-slate-400 ml-1">%</span>
                             </div>
-                            <span id="status-label" class="text-[11px] font-extrabold text-emerald-400 tracking-[0.3em] uppercase mt-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 transition-all">
-                                Optimal Freshness
-                            </span>
-                            <span id="shelf-life-estimate" class="text-[10px] font-mono text-slate-400 mt-2">
-                                Est. Stability: <strong class="text-white">6 - 8 Days</strong>
+                            <span id="status-label" class="text-[10px] font-bold text-emerald-400 tracking-[0.25em] uppercase px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mt-3 max-w-[200px] leading-tight">
+                                Safe Consumption
                             </span>
                         </div>
                     </div>
 
-                    <!-- Core Telemetry Triad -->
-                    <div class="grid grid-cols-4 gap-3 mt-4 w-full text-center border-t border-white/5 pt-6">
-                        <div class="bg-black/25 p-3 rounded-2xl border border-white/5">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Core Temp</p>
-                            <p class="text-base sm:text-lg font-mono font-bold text-white" id="temp-val">4.1°C</p>
+                    <!-- Dynamic Decay Interactive Slider -->
+                    <div class="w-full mt-4 pt-4 border-t border-white/5">
+                        <div class="flex justify-between items-center text-[10px] mono text-slate-400 mb-2">
+                            <span>DECAY TIMELAPSE SIMULATOR</span>
+                            <span id="slider-val" class="text-emerald-400 font-bold">Fresh (2% degraded)</span>
                         </div>
-                        <div class="bg-black/25 p-3 rounded-2xl border border-white/5">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">RH Humidity</p>
-                            <p class="text-base sm:text-lg font-mono font-bold text-white" id="hum-val">62%</p>
+                        <input id="decay-slider" type="range" min="0" max="100" value="2" class="w-full cursor-pointer accent-emerald-500" oninput="handleSliderChange(this.value)">
+                        <div class="flex justify-between text-[8px] mono text-slate-500 mt-1 uppercase">
+                            <span>Harvested (0h)</span>
+                            <span>Optimal Shelf</span>
+                            <span>Decomposed (+168h)</span>
                         </div>
-                        <div class="bg-black/25 p-3 rounded-2xl border border-white/5">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">CO₂ Ambient</p>
-                            <p class="text-base sm:text-lg font-mono font-bold text-white" id="co2-val">410 <span class="text-[10px] text-slate-400">ppm</span></p>
+                    </div>
+
+                    <!-- Tri-Metric Vital Sensors Grid -->
+                    <div class="grid grid-cols-3 gap-3 mt-6 w-full text-center">
+                        <div class="glass-card p-3 rounded-2xl border border-white/5">
+                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Core Temp</p>
+                            <p id="metric-temp" class="text-base sm:text-lg font-bold mono text-white">4.1°C</p>
+                            <span class="text-[8px] text-emerald-400 mono">Within Specs</span>
                         </div>
-                        <div class="bg-black/25 p-3 rounded-2xl border border-white/5">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Surface pH</p>
-                            <p class="text-base sm:text-lg font-mono font-bold text-emerald-400" id="ph-val">6.4</p>
+                        <div class="glass-card p-3 rounded-2xl border border-white/5">
+                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Humidity</p>
+                            <p id="metric-hum" class="text-base sm:text-lg font-bold mono text-white">62%</p>
+                            <span class="text-[8px] text-teal-400 mono">Optimal RH</span>
+                        </div>
+                        <div class="glass-card p-3 rounded-2xl border border-white/5">
+                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">CO₂ Ambient</p>
+                            <p id="metric-co2" class="text-base sm:text-lg font-bold mono text-white">410ppm</p>
+                            <span class="text-[8px] text-slate-400 mono">Ambient Air</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Realtime Gas Oscilloscope Canvas Card -->
-                <div class="glass-card rounded-[2rem] p-6 border border-white/5 relative overflow-hidden">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-wave-square text-emerald-400 text-xs"></i>
-                            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Gas Spectrometry Frequency (VOC Phase Oscilloscope)</h4>
-                        </div>
-                        <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">REALTIME 60Hz</span>
+                <!-- Advisory Action Card -->
+                <div id="advisory-card" class="glass-card p-6 rounded-[2rem] border-l-4 border-l-emerald-500 border border-white/5 flex items-start gap-4">
+                    <div id="advisory-icon-wrapper" class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
+                        <i id="advisory-icon" class="fas fa-shield-check text-lg"></i>
                     </div>
-
-                    <div class="relative w-full h-28 bg-slate-950/80 rounded-xl overflow-hidden border border-white/5">
-                        <canvas id="spectrogram-canvas" class="w-full h-full"></canvas>
-                        <!-- Axis grid markers -->
-                        <div class="absolute inset-0 pointer-events-none flex flex-col justify-between p-2 opacity-20 text-[8px] font-mono text-emerald-500">
-                            <div class="border-b border-dashed border-emerald-500/50 w-full">2.5 kHz</div>
-                            <div class="border-b border-dashed border-emerald-500/50 w-full">1.2 kHz</div>
-                            <div class="w-full">0.0 kHz</div>
+                    <div>
+                        <h4 id="advisory-title" class="text-xs font-bold text-white uppercase tracking-wider">Quality Assurance Certified</h4>
+                        <p id="advisory-body" class="text-xs text-slate-400 mt-1 leading-relaxed">
+                            Specimen exhibits cellular membrane integrity. No trace hazardous amines detected. Authorized for commercial tier-1 supermarket distribution.
+                        </p>
+                        <div class="mt-3 flex items-center gap-4 text-[10px] mono">
+                            <span class="text-slate-500">Est. Shelf-Life:</span>
+                            <span id="shelf-life-val" class="font-bold text-emerald-400">6 Days 14 Hours</span>
                         </div>
-                    </div>
-                    <div class="flex justify-between items-center text-[10px] font-mono text-slate-500 mt-2">
-                        <span>Baseline Resistor: 47 kΩ</span>
-                        <span>Bandpass Filter: Active</span>
-                        <span class="text-emerald-400">Signal-to-Noise: 48 dB</span>
                     </div>
                 </div>
 
             </div>
 
-
-            <!-- Right 5 columns: Bio-Chemical breakdown, Supply chain integrity, & Automated Advisory -->
-            <div class="lg:col-span-5 flex flex-col gap-6">
+            <!-- COLUMN 3 & 4: BIOCHEMICAL BARS, SPECTROGRAM & BLOCKCHAIN (7 COLS) -->
+            <div class="lg:col-span-7 flex flex-col gap-6">
                 
-                <!-- Bio-Chemical Gas Chromatography Card -->
-                <div class="glass-card p-6 sm:p-8 rounded-[2.5rem] border border-white/5 relative">
+                <!-- BIOCHEMICAL BREAKDOWN -->
+                <div class="glass-card p-6 sm:p-8 rounded-[2.5rem] border border-white/10">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xs font-extrabold text-slate-300 uppercase tracking-widest border-l-2 border-emerald-500 pl-3">
-                            Bio-Chemical Assays
-                        </h3>
-                        <span class="text-[10px] font-mono text-slate-500">ISO-22000 STANDARD</span>
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                                <i class="fas fa-atom text-xs"></i>
+                            </div>
+                            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest">Bio-Chemical Volatiles Analysis</h3>
+                        </div>
+                        <span class="text-[9px] mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/20">
+                            PPM/PPB QUANTUM NANO-CELLS
+                        </span>
                     </div>
 
                     <div class="space-y-6">
-                        
-                        <!-- Ethylene Gas -->
+                        <!-- Ethylene -->
                         <div>
                             <div class="flex justify-between items-end mb-2">
                                 <div>
-                                    <span class="text-xs font-bold text-white">Ethylene Volatiles (C₂H₄)</span>
-                                    <p class="text-[9px] text-slate-500">Ripening hormone & oxidative marker</p>
+                                    <span class="text-xs font-bold text-white">Ethylene Release Rate (C₂H₄)</span>
+                                    <p class="text-[9px] text-slate-400">Primary hormone governing plant senescence and ripening kinetics</p>
                                 </div>
                                 <span id="eth-text" class="text-xs font-mono font-bold text-emerald-400">0.02 ppm</span>
                             </div>
-                            <div class="h-2 bg-slate-950 rounded-full overflow-hidden p-0.5 border border-white/5">
-                                <div id="eth-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-700" style="width: 10%"></div>
-                            </div>
-                            <div class="flex justify-between text-[8px] font-mono text-slate-500 mt-1">
-                                <span>SAFE: &lt; 2.0 ppm</span>
-                                <span class="text-slate-400">CRITICAL: &gt; 12.0 ppm</span>
+                            <div class="h-2 bg-slate-900/90 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                <div id="eth-bar" class="h-full bg-emerald-400 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(16,185,129,0.5)]" style="width: 6%"></div>
                             </div>
                         </div>
 
-                        <!-- Ammonia Volatiles -->
+                        <!-- Ammonia -->
                         <div>
                             <div class="flex justify-between items-end mb-2">
                                 <div>
-                                    <span class="text-xs font-bold text-white">Ammonia Decay (NH₃)</span>
-                                    <p class="text-[9px] text-slate-500">Proteinaceous bacterial breakdown</p>
+                                    <span class="text-xs font-bold text-white">Ammonia & Volatile Nitrogen (NH₃ / TVB-N)</span>
+                                    <p class="text-[9px] text-slate-400">Bacterial decomposition byproduct of nitrogenous amino compounds</p>
                                 </div>
                                 <span id="amm-text" class="text-xs font-mono font-bold text-emerald-400">1.4 ppb</span>
                             </div>
-                            <div class="h-2 bg-slate-950 rounded-full overflow-hidden p-0.5 border border-white/5">
-                                <div id="amm-bar" class="h-full bg-emerald-400 rounded-full transition-all duration-700" style="width: 7%"></div>
-                            </div>
-                            <div class="flex justify-between text-[8px] font-mono text-slate-500 mt-1">
-                                <span>SAFE: &lt; 10.0 ppb</span>
-                                <span class="text-slate-400">CRITICAL: &gt; 35.0 ppb</span>
+                            <div class="h-2 bg-slate-900/90 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                <div id="amm-bar" class="h-full bg-teal-400 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(45,212,191,0.5)]" style="width: 4%"></div>
                             </div>
                         </div>
 
-                        <!-- Hydrogen Sulfide / TVB-N -->
+                        <!-- Cadaverine / Amine -->
                         <div>
                             <div class="flex justify-between items-end mb-2">
                                 <div>
-                                    <span class="text-xs font-bold text-white">Volatile Nitrogen (TVB-N / H₂S)</span>
-                                    <p class="text-[9px] text-slate-500">Microbial putrefaction byproduct</p>
+                                    <span class="text-xs font-bold text-white">Cadaverine & Histamine Index (C₅H₁₄N₂)</span>
+                                    <p class="text-[9px] text-slate-400">Toxicity marker for microbial decarboxylation in animal & plant tissue</p>
                                 </div>
-                                <span id="tvbn-text" class="text-xs font-mono font-bold text-emerald-400">0.8 mg/100g</span>
+                                <span id="cad-text" class="text-xs font-mono font-bold text-emerald-400">0.05 mg/kg</span>
                             </div>
-                            <div class="h-2 bg-slate-950 rounded-full overflow-hidden p-0.5 border border-white/5">
-                                <div id="tvbn-bar" class="h-full bg-teal-400 rounded-full transition-all duration-700" style="width: 8%"></div>
+                            <div class="h-2 bg-slate-900/90 rounded-full overflow-hidden p-0.5 border border-white/5">
+                                <div id="cad-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(16,185,129,0.5)]" style="width: 2%"></div>
                             </div>
-                        </div>
-
-                        <!-- Ethanol Vapor -->
-                        <div>
-                            <div class="flex justify-between items-end mb-2">
-                                <div>
-                                    <span class="text-xs font-bold text-white">Anaerobic Ferment (Ethanol)</span>
-                                    <p class="text-[9px] text-slate-500">Yeast & fungal spore fermentation</p>
-                                </div>
-                                <span id="ethan-text" class="text-xs font-mono font-bold text-emerald-400">0.01 %</span>
-                            </div>
-                            <div class="h-2 bg-slate-950 rounded-full overflow-hidden p-0.5 border border-white/5">
-                                <div id="ethan-bar" class="h-full bg-emerald-400 rounded-full transition-all duration-700" style="width: 5%"></div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Decentralized Supply Chain Ledger Card -->
-                <div class="glass-card p-6 sm:p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden flex-grow flex flex-col justify-between">
-                    <div class="absolute -right-4 -top-4 p-8 opacity-5 pointer-events-none">
-                        <i class="fas fa-link text-8xl text-emerald-500"></i>
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between items-center mb-5">
-                            <h3 class="text-xs font-extrabold text-slate-300 uppercase tracking-widest border-l-2 border-emerald-500 pl-3">
-                                Decentralized Provenance
-                            </h3>
-                            <button onclick="openBlockchainModal()" class="text-[10px] text-emerald-400 hover:text-emerald-300 font-mono font-bold flex items-center gap-1">
-                                <span>Verify Block</span>
-                                <i class="fas fa-chevron-right text-[8px]"></i>
-                            </button>
-                        </div>
-
-                        <div class="space-y-3 font-mono text-[11px] text-slate-400">
-                            <div class="flex justify-between items-center border-b border-white/5 pb-2.5">
-                                <span class="text-slate-500">PROVENANCE ORIGIN</span>
-                                <span class="text-white font-bold" id="prov-origin">MANDYA_S_REGION_04</span>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-white/5 pb-2.5">
-                                <span class="text-slate-500">SKU IDENTIFIER</span>
-                                <span class="text-white font-bold" id="prov-sku">PR-2026-BAN-882</span>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-white/5 pb-2.5">
-                                <span class="text-slate-500">NANO-FILM SENSOR</span>
-                                <span class="text-emerald-400 font-bold flex items-center gap-1.5" id="prov-status">
-                                    <i class="fas fa-check-circle text-xs"></i> ACTIVE_AUTHENTICATED
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-white/5 pb-2.5">
-                                <span class="text-slate-500">LAST SYNC TIME</span>
-                                <span class="text-slate-300" id="prov-timestamp">12 SECONDS AGO</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Blockchain verification CTA button linked to pratheek.app -->
-                    <div class="mt-6 pt-3">
-                        <div onclick="openBlockchainModal()" 
-                             class="group cursor-pointer bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 hover:from-emerald-500/20 hover:to-teal-500/20 border border-emerald-500/30 p-3 rounded-2xl flex items-center justify-between transition-all">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
-                                    <i class="fas fa-lock"></i>
-                                </div>
-                                <div>
-                                    <p class="text-[9px] font-bold uppercase text-emerald-400 tracking-wider">BLOCKCHAIN SECURED BY PRATHEEK.APP</p>
-                                    <p class="text-[10px] text-slate-400 font-mono">Consensus Hash: 0x9a4f...31bc</p>
-                                </div>
-                            </div>
-                            <i class="fas fa-arrow-up-right-from-square text-emerald-400 text-xs group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
                         </div>
                     </div>
                 </div>
 
-            </div>
-        </div>
-
-
-        <!-- ================= SYSTEM RECOMMENDATION & ACTION NOTICES ================= -->
-        <div class="mt-8 glass-card rounded-[2rem] p-6 sm:p-8 border border-white/5">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div class="flex items-start gap-4">
-                    <div id="advisory-icon-box" class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl shrink-0">
-                        <i class="fas fa-clipboard-check" id="advisory-icon"></i>
-                    </div>
-                    <div>
+                <!-- LIVE SPECTROGRAM CANVAS -->
+                <div id="spectroscopy" class="glass-card p-6 rounded-[2.5rem] border border-white/10 relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-3">
                         <div class="flex items-center gap-2">
-                            <h4 class="text-sm font-extrabold text-white uppercase tracking-wider" id="advisory-title">System Advisory: Prime Consumption Window</h4>
-                            <span class="bg-emerald-500/10 text-emerald-400 text-[9px] font-mono px-2 py-0.5 rounded border border-emerald-500/20 font-bold" id="advisory-badge">SAFE</span>
+                            <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
+                            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest">Continuous Spectral Absorption</h3>
                         </div>
-                        <p class="text-xs text-slate-400 mt-1 max-w-3xl leading-relaxed" id="advisory-desc">
-                            All volatile biomarker indicators match grade-A post-harvest thresholds. Cold chain containment intact. No microbial decay volatiles or pathogenic ammonia outgassing detected. Safe for direct consumer logistics and culinary distribution.
-                        </p>
+                        <span class="text-[9px] mono text-slate-400">WAVELENGTH: 380nm - 1100nm (NIR)</span>
+                    </div>
+
+                    <!-- Canvas for Animated Waveform -->
+                    <div class="relative w-full h-32 bg-slate-950/80 rounded-2xl overflow-hidden border border-white/5">
+                        <canvas id="spectral-canvas" class="w-full h-full block"></canvas>
+                        <div class="absolute top-2 left-3 text-[8px] mono text-emerald-500/80">ABSORBANCE PEAK: <span id="absorbance-val">0.14 AU @ 740nm</span></div>
                     </div>
                 </div>
 
-                <div class="flex flex-wrap gap-3 w-full md:w-auto shrink-0">
-                    <button onclick="openCertModal()" class="flex-1 md:flex-initial px-5 py-2.5 bg-slate-900 border border-slate-700/80 hover:border-emerald-500/50 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition flex items-center justify-center gap-2">
-                        <i class="fas fa-file-contract text-emerald-400"></i>
-                        <span>Export Cert</span>
-                    </button>
-                    <button onclick="startCamera()" class="flex-1 md:flex-initial px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
-                        <i class="fas fa-rotate"></i>
-                        <span>Re-Scan Item</span>
-                    </button>
+                <!-- SUPPLY CHAIN PROVENANCE & BLOCKCHAIN AUDIT -->
+                <div id="provenance" class="glass-card p-6 sm:p-8 rounded-[2.5rem] flex-grow relative overflow-hidden border border-white/10">
+                    <div class="absolute -top-10 -right-10 p-12 opacity-5 pointer-events-none">
+                        <i class="fas fa-cubes-stacked text-9xl text-white"></i>
+                    </div>
+
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                                <i class="fas fa-link text-xs"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xs font-bold text-white uppercase tracking-widest">Supply Chain Cryptographic Ledger</h3>
+                                <p class="text-[9px] text-slate-400">Zero-Knowledge Verification against decentralized storage node</p>
+                            </div>
+                        </div>
+                        <span class="text-[9px] mono font-bold text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-full bg-emerald-500/10">
+                            VALIDATED LEDGER
+                        </span>
+                    </div>
+
+                    <div class="space-y-3 font-mono text-[10px] text-slate-400">
+                        <div class="flex justify-between border-b border-white/5 pb-2.5">
+                            <span class="text-slate-500 uppercase">FARM PROVENANCE</span>
+                            <span id="provenance-origin" class="text-white font-semibold">MANDYA_ZONE_4_KARNATAKA</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/5 pb-2.5">
+                            <span class="text-slate-500 uppercase">BATCH SKU</span>
+                            <span id="provenance-sku" class="text-white font-semibold">PR-2026-BAN-882</span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/5 pb-2.5">
+                            <span class="text-slate-500 uppercase">NANO-FILM SENSOR TAG</span>
+                            <span class="text-emerald-400 font-semibold flex items-center gap-1">
+                                <i class="fas fa-circle-check text-[9px]"></i> TAG_ACTIVE_AUTHENTICATED
+                            </span>
+                        </div>
+                        <div class="flex justify-between border-b border-white/5 pb-2.5">
+                            <span class="text-slate-500 uppercase">CHAIN BLOCK HASH</span>
+                            <div class="flex items-center gap-2">
+                                <span id="provenance-hash" class="text-slate-300">0x7f9a88...c491e</span>
+                                <button onclick="copyHashToClipboard()" class="text-emerald-400 hover:text-emerald-300" title="Copy Transaction Hash">
+                                    <i class="fas fa-copy text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CTA to pratheek.app -->
+                        <div class="pt-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+                            <span class="text-[9px] text-slate-500">Immutable ledger consensus executed on Pratheek Edge Mesh.</span>
+                            <a href="https://pratheek.app" target="_blank" class="w-full sm:w-auto text-center bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                                <i class="fas fa-arrow-up-right-from-square text-[9px]"></i>
+                                Verify on Pratheek.app
+                            </a>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
 
-        <!-- ================= FOOTER ================= -->
-        <footer class="mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-            <div>
-                <div class="flex items-center justify-center md:justify-start gap-2 mb-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <p class="text-xs font-extrabold text-white tracking-widest uppercase">PRATHEEK ENTERPRISES</p>
+        <!-- TELEMETRY & SYSTEM LOGS SECTION -->
+        <div id="apilogs" class="mt-8 glass-card rounded-[2.5rem] p-6 sm:p-8 border border-white/10">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4 pb-4 border-b border-white/5">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center">
+                        <i class="fas fa-terminal text-xs"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-white uppercase tracking-widest">Telemetry & Edge Diagnostics</h3>
+                        <p class="text-[10px] text-slate-400">Live communication packet streaming from Node 048</p>
+                    </div>
                 </div>
-                <p class="text-[10px] text-slate-500 uppercase tracking-[0.25em]">Autonomous Bio-Sensing & Food Intelligence Ecosystem</p>
+                <div class="flex items-center gap-2">
+                    <button onclick="clearLogs()" class="px-3 py-1 rounded-lg glass-card text-[10px] mono text-slate-400 hover:text-white transition-all">
+                        Clear Feed
+                    </button>
+                    <span class="text-[10px] mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
+                        RECEIVING 10 Hz
+                    </span>
+                </div>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-8 text-[11px] font-bold text-slate-400 tracking-wider uppercase font-mono">
-                <a href="https://pratheek.app" target="_blank" class="hover:text-emerald-400 transition-colors flex items-center gap-1">
-                    <span>pratheek.app</span>
-                    <i class="fas fa-arrow-up-right-from-square text-[9px]"></i>
+            <div id="terminal-feed" class="mono text-[10px] text-slate-400 bg-black/40 p-4 rounded-2xl h-36 overflow-y-auto space-y-1.5 custom-scroll border border-white/5">
+                <div class="text-emerald-400/90">[SYS_INIT] Connected to WebSocket cluster: wss://telemetry.pratheek.app/v2/node-048</div>
+                <div class="text-slate-400">[STREAM] Optical sensor synchronized. Baseline zero calibrated.</div>
+                <div class="text-teal-400">[SPECTRO] Laser wavelength locked @ 780.4nm. Reflectance coefficient 0.942.</div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="mt-16 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+            <div>
+                <div class="flex items-center justify-center md:justify-start gap-2 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <p class="text-xs font-black text-white tracking-widest uppercase">PRATHEEK ENTERPRISES</p>
+                </div>
+                <p class="text-[10px] text-slate-500 uppercase tracking-[0.25em]">Autonomous Bio-Molecular Food Safety Intelligence</p>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-8 text-[10px] font-bold text-slate-400 tracking-widest uppercase">
+                <a href="https://pratheek.app" target="_blank" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+                    <i class="fas fa-globe text-[10px]"></i> pratheek.app
                 </a>
-                <button onclick="openLogsModal()" class="hover:text-emerald-400 transition-colors">Telemetry Nodes</button>
-                <a href="https://pratheek.app/contact.html" target="_blank" class="hover:text-emerald-400 transition-colors">Contact Support</a>
-                <span class="text-slate-600">© 2026 Eco-Sense Division</span>
+                <a href="https://pratheek.app/contact.html" target="_blank" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+                    <i class="fas fa-headset text-[10px]"></i> Contact Support
+                </a>
+                <a href="https://pratheek.app/privacy" target="_blank" class="hover:text-emerald-400 transition-colors">
+                    Security Policy
+                </a>
+                <span class="text-slate-600">© 2026 Eco-Sense AI Division</span>
             </div>
         </footer>
     </main>
 
-    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <!-- TOAST POPUP TEMPLATE & SCRIPTS -->
     <script>
-        /* ================= STATE MANAGEMENT ================= */
+        // System State
         let stream = null;
         let isSpoiled = false;
-        let audioMuted = false;
-        let audioCtx = null;
+        let soundEnabled = true;
         let currentFacingMode = "environment";
-        let currentPreset = 'banana';
+        let audioCtx = null;
         let animationFrameId = null;
 
-        // Sample Presets Data
+        // Current specimen preset data
         const PRESETS = {
-            banana: {
-                name: "Robusta Banana Cluster",
-                origin: "MANDYA_S_REGION_04",
+            'banana-fresh': {
+                name: "Cavendish Banana (Fresh)",
+                score: 98,
+                status: "Safe Consumption",
+                category: "Class A: Consumable",
+                isDecayed: false,
+                ethylene: 0.02,
+                ammonia: 1.4,
+                cadaverine: 0.05,
+                temp: "4.1°C",
+                hum: "62%",
+                co2: "410ppm",
+                origin: "MANDYA_ZONE_4_KARNATAKA",
                 sku: "PR-2026-BAN-882",
-                normal: { score: 98, eth: 0.02, amm: 1.4, tvbn: 0.8, ethan: 0.01, temp: "4.1°C", hum: "62%", co2: "410", ph: "6.4", days: "6 - 8 Days" },
-                spoiled: { score: 14, eth: 18.42, amm: 42.1, tvbn: 16.4, ethan: 1.82, temp: "14.8°C", hum: "89%", co2: "1420", ph: "4.2", days: "0 Days (Hazard)" }
+                hash: "0x7f9a882a...c491e01",
+                advisoryTitle: "Quality Assurance Certified",
+                advisoryBody: "Specimen exhibits cellular membrane integrity. No trace hazardous amines detected. Authorized for commercial tier-1 supermarket distribution.",
+                shelfLife: "6 Days 14 Hours",
+                icon: "fa-apple-whole"
             },
-            mango: {
-                name: "Alphonso Mango (Devgad Grade A)",
-                origin: "DEVGAD_ORCHARD_09",
-                sku: "PR-2026-MAN-504",
-                normal: { score: 96, eth: 0.08, amm: 0.9, tvbn: 0.5, ethan: 0.02, temp: "6.0°C", hum: "68%", co2: "430", ph: "5.8", days: "5 - 7 Days" },
-                spoiled: { score: 11, eth: 24.10, amm: 38.5, tvbn: 14.1, ethan: 2.10, temp: "16.2°C", hum: "92%", co2: "1680", ph: "3.9", days: "0 Days (Hazard)" }
+            'avocado-ripe': {
+                name: "Hass Avocado (Optimal Ripe)",
+                score: 72,
+                status: "Peak Maturity - Consume Soon",
+                category: "Class B: Retail Ready",
+                isDecayed: false,
+                ethylene: 2.14,
+                ammonia: 5.6,
+                cadaverine: 0.22,
+                temp: "7.8°C",
+                hum: "68%",
+                co2: "590ppm",
+                origin: "COORG_ESTATE_09_KARNATAKA",
+                sku: "PR-2026-AVO-304",
+                hash: "0x4b1e991f...982cd77",
+                advisoryTitle: "Peak Ripeness Warning",
+                advisoryBody: "Accelerated cellular lipid oxidation. Flavor profile at maximum organoleptic curve. Recommended consumption within 48 hours.",
+                shelfLife: "1 Day 18 Hours",
+                icon: "fa-seedling"
             },
-            salmon: {
-                name: "Chilled Atlantic Salmon Fillet",
-                origin: "COASTAL_COLD_HUB_02",
-                sku: "PR-2026-SAL-119",
-                normal: { score: 99, eth: 0.00, amm: 0.4, tvbn: 4.2, ethan: 0.00, temp: "1.2°C", hum: "78%", co2: "390", ph: "6.6", days: "3 - 4 Days" },
-                spoiled: { score: 8, eth: 1.40, amm: 78.4, tvbn: 38.9, ethan: 0.45, temp: "8.9°C", hum: "95%", co2: "920", ph: "7.9", days: "Expired (Severe)" }
+            'salmon-spoiled': {
+                name: "Atlantic Salmon (Decayed)",
+                score: 11,
+                status: "CRITICAL: BACTERIAL DECAY DETECTED",
+                category: "Class D: Biohazard Rejection",
+                isDecayed: true,
+                ethylene: 19.8,
+                ammonia: 46.2,
+                cadaverine: 8.94,
+                temp: "14.2°C",
+                hum: "89%",
+                co2: "1120ppm",
+                origin: "MANGALORE_DOCK_NODE_02",
+                sku: "PR-2026-SLM-991",
+                hash: "0xee3241bc...ff1023a",
+                advisoryTitle: "Severe Bacterial Pathogen Risk",
+                advisoryBody: "Decarboxylase bacteria activity exceeding safe microbiological thresholds (CFU > 10⁶/g). Immediate destruction protocol mandated.",
+                shelfLife: "Expired 14 Hours Ago",
+                icon: "fa-fish"
             },
-            milk: {
-                name: "A2 Organic Pasteurized Milk (1L)",
-                origin: "SHIVAMOGGA_DAIRY_COOP",
-                sku: "PR-2026-MLK-771",
-                normal: { score: 97, eth: 0.00, amm: 0.2, tvbn: 0.1, ethan: 0.00, temp: "3.2°C", hum: "55%", co2: "400", ph: "6.7", days: "4 - 5 Days" },
-                spoiled: { score: 18, eth: 0.65, amm: 29.8, tvbn: 8.5, ethan: 1.15, temp: "12.4°C", hum: "74%", co2: "1150", ph: "4.8", days: "Curdled / Sour" }
+            'milk-fresh': {
+                name: "Whole Cow Milk (Cold Storage)",
+                score: 95,
+                status: "Pristine Cold-Chain",
+                category: "Class A: Consumable",
+                isDecayed: false,
+                ethylene: 0.01,
+                ammonia: 0.8,
+                cadaverine: 0.02,
+                temp: "3.2°C",
+                hum: "55%",
+                co2: "390ppm",
+                origin: "HASSAN_DAIRY_COOP_11",
+                sku: "PR-2026-MLK-109",
+                hash: "0x12a9bc44...dd5509e",
+                advisoryTitle: "Lactic Acidity In Normal Range",
+                advisoryBody: "Zero microbial spoilage detected. Storage temperature has remained below 4.0°C continuously throughout cold chain transit.",
+                shelfLife: "9 Days 06 Hours",
+                icon: "fa-bottle-droplet"
             }
         };
 
-        /* ================= WEB AUDIO API SYNTHESIZER ================= */
-        // Generates clean sci-fi chirps and alerts without external mp3 files
+        // Initialize Web Audio Synth for Futuristic HUD Feedback
         function initAudio() {
             if (!audioCtx) {
-                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                if (AudioContextClass) {
-                    audioCtx = new AudioContextClass();
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
                 }
-            }
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
             }
         }
 
-        function playSound(type) {
-            if (audioMuted) return;
+        function playTone(freq, type = 'sine', duration = 0.1, delay = 0) {
+            if (!soundEnabled) return;
             try {
                 initAudio();
                 if (!audioCtx) return;
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
 
-                const now = audioCtx.currentTime;
-
-                if (type === 'beep') {
+                setTimeout(() => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(880, now);
-                    osc.frequency.exponentialRampToValueAtTime(1760, now + 0.08);
-                    gain.gain.setValueAtTime(0.08, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.08);
-                } 
-                else if (type === 'sweep') {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(320, now);
-                    osc.frequency.linearRampToValueAtTime(940, now + 0.2);
-                    gain.gain.setValueAtTime(0.06, now);
-                    gain.gain.linearRampToValueAtTime(0.001, now + 0.2);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.2);
-                }
-                else if (type === 'success') {
-                    [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        osc.type = 'sine';
-                        osc.frequency.setValueAtTime(freq, now + (idx * 0.06));
-                        gain.gain.setValueAtTime(0.06, now + (idx * 0.06));
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.06) + 0.25);
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        osc.start(now + (idx * 0.06));
-                        osc.stop(now + (idx * 0.06) + 0.25);
-                    });
-                }
-                else if (type === 'alarm') {
-                    [0, 0.15, 0.3].forEach(delay => {
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        osc.type = 'sawtooth';
-                        osc.frequency.setValueAtTime(300, now + delay);
-                        osc.frequency.linearRampToValueAtTime(220, now + delay + 0.12);
-                        gain.gain.setValueAtTime(0.09, now + delay);
-                        gain.gain.linearRampToValueAtTime(0.001, now + delay + 0.12);
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        osc.start(now + delay);
-                        osc.stop(now + delay + 0.12);
-                    });
-                }
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + duration);
+                }, delay * 1000);
             } catch (e) {
-                console.warn("Audio Context playback constrained:", e);
+                console.warn("Audio synth bypass:", e);
             }
+        }
+
+        function playScanChirp() {
+            playTone(880, 'sine', 0.08);
+            playTone(1320, 'triangle', 0.12, 0.09);
+        }
+
+        function playWarningAlert() {
+            playTone(330, 'sawtooth', 0.2);
+            playTone(280, 'sawtooth', 0.3, 0.15);
+        }
+
+        function playSuccessChime() {
+            playTone(523.25, 'sine', 0.1);
+            playTone(659.25, 'sine', 0.1, 0.08);
+            playTone(783.99, 'sine', 0.18, 0.16);
         }
 
         function toggleAudio() {
-            audioMuted = !audioMuted;
+            soundEnabled = !soundEnabled;
             const icon = document.getElementById('sound-icon');
-            if (audioMuted) {
-                icon.className = 'fas fa-volume-xmark text-slate-500';
-                showToast("Audio Alerts Muted", "info");
+            if (soundEnabled) {
+                icon.className = "fas fa-volume-high text-xs text-emerald-400";
+                showToast("Audio Synthesizer: Enabled", "info");
+                playTone(880, 'sine', 0.1);
             } else {
-                icon.className = 'fas fa-volume-high text-emerald-400';
-                playSound('beep');
-                showToast("Synthesized Audio Alerts Active", "success");
+                icon.className = "fas fa-volume-xmark text-xs text-slate-500";
+                showToast("Audio Synthesizer: Muted", "info");
             }
         }
 
-        /* ================= CAMERA SCANNER IMPLEMENTATION ================= */
-        let scanInterval = null;
-
+        // Camera Management with graceful fallback
         async function startCamera() {
-            playSound('sweep');
+            initAudio();
+            playScanChirp();
             const overlay = document.getElementById('scanner-overlay');
             const video = document.getElementById('video-feed');
-            const fallbackCanvas = document.getElementById('camera-fallback-canvas');
-            const progressBar = document.getElementById('scan-progress-bar');
-            
+            const fallback = document.getElementById('video-fallback');
+            const countdown = document.getElementById('scan-countdown');
+            const stepLabel = document.getElementById('scan-step-label');
+
             overlay.classList.remove('hidden');
-            progressBar.style.width = "0%";
-            updateScannerSteps(0);
+            fallback.classList.add('hidden');
+            video.classList.remove('hidden');
+
+            let timeLeft = 3.5;
+            countdown.innerText = "03.5s";
+            stepLabel.innerText = "Phase 1: Surface Spectrum";
+
+            const timer = setInterval(() => {
+                timeLeft -= 0.5;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                } else {
+                    countdown.innerText = `0${timeLeft.toFixed(1)}s`;
+                    if (timeLeft <= 2.5 && timeLeft > 1.2) {
+                        stepLabel.innerText = "Phase 2: VOC Absorption (NIR)";
+                        playTone(1050, 'triangle', 0.06);
+                    } else if (timeLeft <= 1.2) {
+                        stepLabel.innerText = "Phase 3: Molecular Neural Classify";
+                        playTone(1250, 'sine', 0.06);
+                    }
+                }
+            }, 500);
 
             try {
-                // Request live user media
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { 
-                        facingMode: currentFacingMode,
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
-                    audio: false
-                });
-
-                video.srcObject = stream;
-                fallbackCanvas.classList.add('hidden');
-                video.classList.remove('hidden');
-                logTerminal(`Optical session initialized. Feed source: ${currentFacingMode}.`);
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: currentFacingMode }
+                    });
+                    video.srcObject = stream;
+                } else {
+                    throw new Error("No mediaDevices support");
+                }
             } catch (err) {
-                console.warn("Camera hardware access unavailable. Activating synthetic particle fallback.", err);
+                console.warn("Camera hardware access unavailable. Activating synthetic optical scan simulation...", err);
                 video.classList.add('hidden');
-                fallbackCanvas.classList.remove('hidden');
-                startFallbackCameraSimulation(fallbackCanvas);
-                logTerminal(`Warning: Physical camera restricted. Fallback optical stream simulated.`);
+                fallback.classList.remove('hidden');
             }
 
-            // Animate progress and scan steps
-            let progress = 0;
-            clearInterval(scanInterval);
-            scanInterval = setInterval(() => {
-                progress += 5;
-                progressBar.style.width = `${progress}%`;
-                
-                if (progress === 25) {
-                    playSound('sweep');
-                    updateScannerSteps(1);
-                } else if (progress === 55) {
-                    playSound('sweep');
-                    updateScannerSteps(2);
-                } else if (progress === 80) {
-                    playSound('sweep');
-                    updateScannerSteps(3);
+            setTimeout(() => {
+                stopCamera();
+                // Toggle between Fresh and Spoiled for demo scan button
+                if (!isSpoiled) {
+                    loadSamplePreset('salmon-spoiled');
+                    showToast("Scan complete: Severe Pathogen Detected!", "danger");
+                } else {
+                    loadSamplePreset('banana-fresh');
+                    showToast("Scan complete: Produce verified Safe!", "success");
                 }
-
-                if (progress >= 100) {
-                    clearInterval(scanInterval);
-                    setTimeout(() => {
-                        stopCamera();
-                        toggleAnomalyState();
-                    }, 400);
-                }
-            }, 140);
-        }
-
-        function updateScannerSteps(step) {
-            const title = document.getElementById('scanner-step-title');
-            const desc = document.getElementById('scanner-step-desc');
-            const freq = document.getElementById('spectral-freq-label');
-
-            const steps = [
-                { t: "Locking Nano-Film Sensor", d: "Calibrating optical sensor against ambient volatile layer...", f: "540.2 THz" },
-                { t: "Assaying Ethylene (C₂H₄)", d: "Quantifying volatile gas chromatographic wavelength...", f: "612.8 THz" },
-                { t: "Microbial Amine Verification", d: "Measuring bacterial ammonia outgassing and moisture content...", f: "721.4 THz" },
-                { t: "Hashing Ledger State", d: "Signing verified payload with Node-048 private key...", f: "994.0 THz" }
-            ];
-
-            if (steps[step]) {
-                title.innerText = steps[step].t;
-                desc.innerText = steps[step].d;
-                freq.innerText = steps[step].f;
-            }
-        }
-
-        function completeScanInstant() {
-            clearInterval(scanInterval);
-            stopCamera();
-            toggleAnomalyState();
+                appendLog(`[SCAN_EXECUTED] Specimen telemetry logged to cloud database @ pratheek.app.`);
+            }, 3600);
         }
 
         function stopCamera() {
-            clearInterval(scanInterval);
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
                 stream = null;
@@ -1013,395 +824,328 @@
             document.getElementById('scanner-overlay').classList.add('hidden');
         }
 
-        function switchCameraMode() {
-            playSound('beep');
-            currentFacingMode = (currentFacingMode === "environment") ? "user" : "environment";
-            showToast(`Switching camera to: ${currentFacingMode}`, "info");
-            stopCamera();
-            startCamera();
-        }
-
-        function toggleScannerTorch() {
-            playSound('beep');
+        function switchCameraFacing() {
+            currentFacingMode = currentFacingMode === "environment" ? "user" : "environment";
+            playTone(660, 'sine', 0.08);
             if (stream) {
-                const track = stream.getVideoTracks()[0];
-                const capabilities = track.getCapabilities ? track.getCapabilities() : {};
-                if (capabilities.torch) {
-                    const currentTorch = track.getSettings().torch || false;
-                    track.applyConstraints({ advanced: [{ torch: !currentTorch }] });
-                    showToast(`Illuminator ${!currentTorch ? 'Activated' : 'Deactivated'}`, "info");
-                    return;
-                }
-            }
-            showToast("Hardware flashlight unavailable in this browser/device", "info");
-        }
-
-        // Particle simulation if camera is blocked in browser
-        function startFallbackCameraSimulation(canvas) {
-            const ctx = canvas.getContext('2d');
-            canvas.width = 400;
-            canvas.height = 400;
-            let particles = Array.from({ length: 45 }, () => ({
-                x: Math.random() * 400,
-                y: Math.random() * 400,
-                r: Math.random() * 3 + 1,
-                dx: (Math.random() - 0.5) * 1.5,
-                dy: (Math.random() - 0.5) * 1.5
-            }));
-
-            function draw() {
-                if (document.getElementById('scanner-overlay').classList.contains('hidden')) return;
-                ctx.fillStyle = "#020617";
-                ctx.fillRect(0, 0, 400, 400);
-
-                // Grid lines
-                ctx.strokeStyle = "rgba(16, 185, 129, 0.1)";
-                ctx.lineWidth = 1;
-                for (let i = 0; i < 400; i += 40) {
-                    ctx.beginPath();
-                    ctx.moveTo(i, 0); ctx.lineTo(i, 400);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(0, i); ctx.lineTo(400, i);
-                    ctx.stroke();
-                }
-
-                // Floating particles
-                particles.forEach(p => {
-                    p.x += p.dx;
-                    p.y += p.dy;
-                    if (p.x < 0 || p.x > 400) p.dx *= -1;
-                    if (p.y < 0 || p.y > 400) p.dy *= -1;
-
-                    ctx.fillStyle = "rgba(16, 185, 129, 0.7)";
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-
-                requestAnimationFrame(draw);
-            }
-            draw();
-        }
-
-        /* ================= PRESET SELECTOR & STATE TOGGLER ================= */
-        function selectPreset(presetKey) {
-            playSound('beep');
-            currentPreset = presetKey;
-            
-            // Update button styles
-            document.querySelectorAll('.preset-btn').forEach(btn => {
-                if (btn.dataset.preset === presetKey) {
-                    btn.className = "preset-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-emerald-500 text-black";
-                } else {
-                    btn.className = "preset-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:text-white";
-                }
-            });
-
-            applyDashboardValues();
-            showToast(`Loaded target: ${PRESETS[presetKey].name}`, "info");
-            logTerminal(`Specimen preset changed to: ${PRESETS[presetKey].name} [${PRESETS[presetKey].sku}]`);
-        }
-
-        function toggleAnomalyState() {
-            isSpoiled = !isSpoiled;
-            applyDashboardValues();
-
-            if (isSpoiled) {
-                playSound('alarm');
-                showToast("CRITICAL HAZARD: Spoilage & Microbial Volatiles Detected", "error");
-                logTerminal(`ALERT: Critical volatile threshold violated. Auto-logged on pratheek.app consensus.`);
-            } else {
-                playSound('success');
-                showToast("Specimen Safe: High Freshness Index Verified", "success");
-                logTerminal(`SUCCESS: Specimen passed all ISO-22000 freshness indexes.`);
+                stream.getTracks().forEach(track => track.stop());
+                startCamera();
             }
         }
 
-        function applyDashboardValues() {
-            const data = PRESETS[currentPreset];
-            const metrics = isSpoiled ? data.spoiled : data.normal;
+        // Apply a full specimen preset to the dashboard
+        function loadSamplePreset(presetKey) {
+            const data = PRESETS[presetKey];
+            if (!data) return;
 
-            // DOM elements
-            const gauge = document.getElementById('gauge');
+            initAudio();
+            isSpoiled = data.isDecayed;
+
+            // Update Radial Gauge
+            const gauge = document.getElementById('gauge-circle');
             const percent = document.getElementById('percent-val');
-            const label = document.getElementById('status-label');
-            const shelfLife = document.getElementById('shelf-life-estimate');
-            const laserLine = document.getElementById('scan-laser-line');
-            const anomalyBtn = document.getElementById('anomaly-btn');
-            const gaugeGlow = document.getElementById('gauge-glow');
-            const nodeLed = document.getElementById('node-led');
+            const statusLabel = document.getElementById('status-label');
+            const categoryBadge = document.getElementById('category-badge');
+            const healthPip = document.getElementById('health-pip');
+            const ambientGlow = document.getElementById('ambient-glow');
+            const slider = document.getElementById('decay-slider');
+            const sliderVal = document.getElementById('slider-val');
 
-            // Biochemical bars
+            // Gauge circumference calculation: 2 * PI * 82 ≈ 515.22
+            const circumference = 515.22;
+            const targetOffset = circumference - (data.score / 100) * circumference;
+
+            gauge.style.strokeDashoffset = targetOffset;
+            percent.innerText = data.score;
+            statusLabel.innerText = data.status;
+            categoryBadge.innerText = data.category;
+            slider.value = 100 - data.score;
+            sliderVal.innerText = `${data.name} (${(100 - data.score)}% degraded)`;
+
+            // Theme colors based on spoilage state
+            if (data.score >= 80) {
+                gauge.setAttribute('stroke', '#10b981');
+                percent.className = "text-7xl sm:text-8xl font-black tracking-tighter text-white drop-shadow-md";
+                statusLabel.className = "text-[10px] font-bold text-emerald-400 tracking-[0.25em] uppercase px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mt-3 max-w-[200px] leading-tight";
+                categoryBadge.className = "text-[10px] mono uppercase font-bold tracking-widest text-emerald-400";
+                healthPip.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
+                ambientGlow.className = "absolute -top-24 -left-24 w-72 h-72 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none transition-all duration-1000";
+                playSuccessChime();
+            } else if (data.score >= 50) {
+                gauge.setAttribute('stroke', '#f59e0b');
+                percent.className = "text-7xl sm:text-8xl font-black tracking-tighter text-amber-300 drop-shadow-md";
+                statusLabel.className = "text-[10px] font-bold text-amber-400 tracking-[0.25em] uppercase px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 mt-3 max-w-[200px] leading-tight";
+                categoryBadge.className = "text-[10px] mono uppercase font-bold tracking-widest text-amber-400";
+                healthPip.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
+                ambientGlow.className = "absolute -top-24 -left-24 w-72 h-72 bg-amber-500/15 rounded-full blur-3xl pointer-events-none transition-all duration-1000";
+                playTone(550, 'triangle', 0.15);
+            } else {
+                gauge.setAttribute('stroke', '#ef4444');
+                percent.className = "text-7xl sm:text-8xl font-black tracking-tighter text-rose-500 drop-shadow-md";
+                statusLabel.className = "text-[10px] font-bold text-rose-400 tracking-[0.25em] uppercase px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 mt-3 max-w-[200px] leading-tight";
+                categoryBadge.className = "text-[10px] mono uppercase font-bold tracking-widest text-rose-400";
+                healthPip.className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping";
+                ambientGlow.className = "absolute -top-24 -left-24 w-72 h-72 bg-rose-500/20 rounded-full blur-3xl pointer-events-none transition-all duration-1000";
+                playWarningAlert();
+            }
+
+            // Update Biochemical Volatile Bars
             const ethBar = document.getElementById('eth-bar');
             const ethText = document.getElementById('eth-text');
             const ammBar = document.getElementById('amm-bar');
             const ammText = document.getElementById('amm-text');
-            const tvbnBar = document.getElementById('tvbn-bar');
-            const tvbnText = document.getElementById('tvbn-text');
-            const ethanBar = document.getElementById('ethan-bar');
-            const ethanText = document.getElementById('ethan-text');
+            const cadBar = document.getElementById('cad-bar');
+            const cadText = document.getElementById('cad-text');
 
-            // Physical indicators
-            document.getElementById('temp-val').innerText = metrics.temp;
-            document.getElementById('hum-val').innerText = metrics.hum;
-            document.getElementById('co2-val').innerHTML = `${metrics.co2} <span class="text-[10px] text-slate-400">ppm</span>`;
-            document.getElementById('ph-val').innerText = metrics.ph;
+            ethText.innerText = `${data.ethylene} ppm`;
+            ethBar.style.width = `${Math.min(100, (data.ethylene / 20) * 100)}%`;
+            ethBar.className = data.ethylene > 5 ? "h-full bg-rose-500 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(239,68,68,0.6)]" : "h-full bg-emerald-400 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(16,185,129,0.5)]";
 
-            // Provenance Card
-            document.getElementById('prov-origin').innerText = data.origin;
-            document.getElementById('prov-sku').innerText = data.sku;
-            document.getElementById('prov-timestamp').innerText = 'JUST NOW';
+            ammText.innerText = `${data.ammonia} ppb`;
+            ammBar.style.width = `${Math.min(100, (data.ammonia / 50) * 100)}%`;
+            ammBar.className = data.ammonia > 15 ? "h-full bg-rose-400 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(239,68,68,0.6)]" : "h-full bg-teal-400 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(45,212,191,0.5)]";
 
-            // Advisory Card
-            const advBox = document.getElementById('advisory-icon-box');
+            cadText.innerText = `${data.cadaverine} mg/kg`;
+            cadBar.style.width = `${Math.min(100, (data.cadaverine / 10) * 100)}%`;
+            cadBar.className = data.cadaverine > 2 ? "h-full bg-rose-500 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(239,68,68,0.6)]" : "h-full bg-emerald-500 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(16,185,129,0.5)]";
+
+            // Update Telemetry Vitals
+            document.getElementById('metric-temp').innerText = data.temp;
+            document.getElementById('metric-hum').innerText = data.hum;
+            document.getElementById('metric-co2').innerText = data.co2;
+
+            // Update Advisory
+            const advCard = document.getElementById('advisory-card');
+            const advIconWrapper = document.getElementById('advisory-icon-wrapper');
             const advIcon = document.getElementById('advisory-icon');
             const advTitle = document.getElementById('advisory-title');
-            const advBadge = document.getElementById('advisory-badge');
-            const advDesc = document.getElementById('advisory-desc');
+            const advBody = document.getElementById('advisory-body');
+            const shelfVal = document.getElementById('shelf-life-val');
 
-            // Values update
-            percent.innerText = metrics.score;
-            ethText.innerText = `${metrics.eth} ppm`;
-            ammText.innerText = `${metrics.amm} ppb`;
-            tvbnText.innerText = `${metrics.tvbn} mg/100g`;
-            ethanText.innerText = `${metrics.ethan} %`;
+            advTitle.innerText = data.advisoryTitle;
+            advBody.innerText = data.advisoryBody;
+            shelfVal.innerText = data.shelfLife;
 
-            // Dynamic calculation of bar widths
-            ethBar.style.width = `${Math.min(100, (metrics.eth / 20) * 100)}%`;
-            ammBar.style.width = `${Math.min(100, (metrics.amm / 50) * 100)}%`;
-            tvbnBar.style.width = `${Math.min(100, (metrics.tvbn / 40) * 100)}%`;
-            ethanBar.style.width = `${Math.min(100, (metrics.ethan / 2.5) * 100)}%`;
-
-            // Certificate values preview
-            document.getElementById('cert-commodity').innerText = data.name;
-            document.getElementById('cert-safety-score').innerText = `${metrics.score}% (${isSpoiled ? 'Grade F - Rotten' : 'Grade A - Premium'})`;
-            document.getElementById('cert-ethylene').innerText = `${metrics.eth} ppm`;
-            document.getElementById('cert-ammonia').innerText = `${metrics.amm} ppb`;
-
-            if (isSpoiled) {
-                // Hazardous / Spoiled theme
-                gauge.style.strokeDasharray = `${metrics.score}, 100`;
-                gauge.className = "stroke-red-500 transition-all duration-1000 ease-out";
-                percent.className = "text-6xl sm:text-7xl font-black tracking-tighter text-red-500 transition-colors duration-500";
-                
-                label.innerText = "CRITICAL: BACTERIAL DECAY DETECTED";
-                label.className = "text-[11px] font-extrabold text-red-400 tracking-[0.2em] uppercase mt-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 transition-all";
-                shelfLife.innerHTML = `Est. Stability: <strong class="text-red-400">${metrics.days}</strong>`;
-
-                laserLine.classList.add('danger-laser');
-                anomalyBtn.innerHTML = `<i class="fas fa-rotate text-[10px]"></i><span>Reset to Fresh State</span>`;
-                anomalyBtn.className = "px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-red-500/20 border border-red-500 text-red-300 transition flex items-center gap-1.5";
-                
-                gaugeGlow.className = "absolute inset-0 rounded-full bg-red-500/10 filter blur-3xl";
-                nodeLed.className = "w-2.5 h-2.5 rounded-full bg-red-500 animate-ping";
-
-                // Bars to Red
-                ethBar.className = "h-full bg-red-500 rounded-full transition-all duration-700";
-                ethText.className = "text-xs font-mono font-bold text-red-400";
-                ammBar.className = "h-full bg-red-500 rounded-full transition-all duration-700";
-                ammText.className = "text-xs font-mono font-bold text-red-400";
-                tvbnBar.className = "h-full bg-red-400 rounded-full transition-all duration-700";
-                tvbnText.className = "text-xs font-mono font-bold text-red-400";
-
-                document.getElementById('prov-status').innerHTML = `<i class="fas fa-triangle-exclamation text-xs text-red-500"></i> <span class="text-red-400">ANOMALY_RECORDED</span>`;
-
-                // Advisory Card Spoilage notice
-                advBox.className = "w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 flex items-center justify-center text-xl shrink-0";
-                advIcon.className = "fas fa-skull-crossbones";
-                advTitle.innerText = "URGENT ADVISORY: BIO-HAZARD & ROTTEN";
-                advBadge.innerText = "REJECT";
-                advBadge.className = "bg-red-500/20 text-red-400 text-[9px] font-mono px-2 py-0.5 rounded border border-red-500/40 font-bold";
-                advDesc.innerText = `Elevated ammonia (${metrics.amm} ppb) and volatile amines indicate active microbial colonization. Ethylene surge accelerated senescence breakdown. DO NOT CONSUME. Lot flagged for quarantine.`;
-
+            if (data.isDecayed) {
+                advCard.className = "glass-card p-6 rounded-[2rem] border-l-4 border-l-rose-500 border border-white/5 flex items-start gap-4";
+                advIconWrapper.className = "w-10 h-10 rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center shrink-0";
+                advIcon.className = "fas fa-biohazard text-lg";
+                shelfVal.className = "font-bold text-rose-400";
+            } else if (data.score < 80) {
+                advCard.className = "glass-card p-6 rounded-[2rem] border-l-4 border-l-amber-500 border border-white/5 flex items-start gap-4";
+                advIconWrapper.className = "w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0";
+                advIcon.className = "fas fa-clock text-lg";
+                shelfVal.className = "font-bold text-amber-400";
             } else {
-                // Healthy / Fresh theme
-                gauge.style.strokeDasharray = `${metrics.score}, 100`;
-                gauge.className = "stroke-emerald-500 transition-all duration-1000 ease-out";
-                percent.className = "text-6xl sm:text-7xl font-black tracking-tighter text-white transition-colors duration-500";
-                
-                label.innerText = "Optimal Freshness";
-                label.className = "text-[11px] font-extrabold text-emerald-400 tracking-[0.3em] uppercase mt-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 transition-all";
-                shelfLife.innerHTML = `Est. Stability: <strong class="text-white">${metrics.days}</strong>`;
+                advCard.className = "glass-card p-6 rounded-[2rem] border-l-4 border-l-emerald-500 border border-white/5 flex items-start gap-4";
+                advIconWrapper.className = "w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0";
+                advIcon.className = "fas fa-shield-check text-lg";
+                shelfVal.className = "font-bold text-emerald-400";
+            }
 
-                laserLine.classList.remove('danger-laser');
-                anomalyBtn.innerHTML = `<i class="fas fa-triangle-exclamation text-[10px]"></i><span>Simulate Spoilage Anomaly</span>`;
-                anomalyBtn.className = "px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-900 border border-slate-700 text-slate-300 hover:border-red-500/60 hover:text-red-400 transition flex items-center gap-1.5";
+            // Update Provenance Data
+            document.getElementById('provenance-origin').innerText = data.origin;
+            document.getElementById('provenance-sku').innerText = data.sku;
+            document.getElementById('provenance-hash').innerText = data.hash;
 
-                gaugeGlow.className = "absolute inset-0 rounded-full bg-emerald-500/5 filter blur-3xl";
-                nodeLed.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+            appendLog(`[PRESET_LOAD] Sample switched to '${data.name}'. Recalculated bio-index: ${data.score}%. Verification hash synced with pratheek.app.`);
+        }
 
-                // Bars to Emerald
-                ethBar.className = "h-full bg-emerald-500 rounded-full transition-all duration-700";
-                ethText.className = "text-xs font-mono font-bold text-emerald-400";
-                ammBar.className = "h-full bg-emerald-400 rounded-full transition-all duration-700";
-                ammText.className = "text-xs font-mono font-bold text-emerald-400";
-                tvbnBar.className = "h-full bg-teal-400 rounded-full transition-all duration-700";
-                tvbnText.className = "text-xs font-mono font-bold text-emerald-400";
+        // Dynamic Interactive Slider that morphs biochemical parameters continuously
+        function handleSliderChange(val) {
+            const decay = parseInt(val, 10);
+            const score = 100 - decay;
+            const gauge = document.getElementById('gauge-circle');
+            const percent = document.getElementById('percent-val');
+            const statusLabel = document.getElementById('status-label');
+            const sliderVal = document.getElementById('slider-val');
 
-                document.getElementById('prov-status').innerHTML = `<i class="fas fa-check-circle text-xs text-emerald-500"></i> <span class="text-emerald-400">ACTIVE_AUTHENTICATED</span>`;
+            const circumference = 515.22;
+            gauge.style.strokeDashoffset = circumference - (score / 100) * circumference;
+            percent.innerText = score;
 
-                // Advisory Card Fresh notice
-                advBox.className = "w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl shrink-0";
-                advIcon.className = "fas fa-clipboard-check";
-                advTitle.innerText = "System Advisory: Prime Consumption Window";
-                advBadge.innerText = "SAFE";
-                advBadge.className = "bg-emerald-500/10 text-emerald-400 text-[9px] font-mono px-2 py-0.5 rounded border border-emerald-500/20 font-bold";
-                advDesc.innerText = "All volatile biomarker indicators match grade-A post-harvest thresholds. Cold chain containment intact. No microbial decay volatiles or pathogenic ammonia outgassing detected. Safe for direct consumer logistics and culinary distribution.";
+            sliderVal.innerText = `${decay}% degraded (${(decay * 1.68).toFixed(1)}h elapsed)`;
+
+            // Compute dynamic VOC values
+            const eth = (0.02 + (decay / 100) * 19.5).toFixed(2);
+            const amm = (1.2 + (decay / 100) * 44.0).toFixed(1);
+            const cad = (0.05 + (decay / 100) * 8.8).toFixed(2);
+
+            document.getElementById('eth-text').innerText = `${eth} ppm`;
+            document.getElementById('eth-bar').style.width = `${decay}%`;
+
+            document.getElementById('amm-text').innerText = `${amm} ppb`;
+            document.getElementById('amm-bar').style.width = `${Math.min(100, decay * 1.1)}%`;
+
+            document.getElementById('cad-text').innerText = `${cad} mg/kg`;
+            document.getElementById('cad-bar').style.width = `${decay}%`;
+
+            if (score >= 80) {
+                gauge.setAttribute('stroke', '#10b981');
+                percent.className = "text-7xl sm:text-8xl font-black tracking-tighter text-white drop-shadow-md";
+                statusLabel.innerText = "Safe Consumption";
+                statusLabel.className = "text-[10px] font-bold text-emerald-400 tracking-[0.25em] uppercase px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mt-3 max-w-[200px] leading-tight";
+            } else if (score >= 50) {
+                gauge.setAttribute('stroke', '#f59e0b');
+                percent.className = "text-7xl sm:text-8xl font-black tracking-tighter text-amber-300 drop-shadow-md";
+                statusLabel.innerText = "Maturity Degrading";
+                statusLabel.className = "text-[10px] font-bold text-amber-400 tracking-[0.25em] uppercase px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 mt-3 max-w-[200px] leading-tight";
+            } else {
+                gauge.setAttribute('stroke', '#ef4444');
+                percent.className = "text-7xl sm:text-8xl font-black tracking-tighter text-rose-500 drop-shadow-md";
+                statusLabel.innerText = "Bacterial Spoilage Warning";
+                statusLabel.className = "text-[10px] font-bold text-rose-400 tracking-[0.25em] uppercase px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 mt-3 max-w-[200px] leading-tight";
             }
         }
 
-        /* ================= OSCILLOSCOPE SPECTRAL CANVAS ================= */
-        const canvas = document.getElementById('spectrogram-canvas');
-        const ctx = canvas.getContext('2d');
-        let phase = 0;
+        // Real-time Canvas Waveform Animation for Spectroscopy
+        function initSpectrogram() {
+            const canvas = document.getElementById('spectral-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
 
-        function resizeCanvas() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+            function resize() {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
 
-        function renderOscilloscope() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let phase = 0;
 
-            const width = canvas.width;
-            const height = canvas.height;
-            const midY = height / 2;
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = isSpoiled ? '#ef4444' : '#10b981';
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = isSpoiled ? '#ef4444' : '#10b981';
+                // Grid background
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+                ctx.lineWidth = 1;
+                for (let x = 0; x < canvas.width; x += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.stroke();
+                }
 
-            ctx.beginPath();
-            for (let x = 0; x < width; x++) {
-                // Wave formula reacting to spoiled noise spikes
-                const freq1 = isSpoiled ? 0.05 : 0.02;
-                const freq2 = isSpoiled ? 0.12 : 0.04;
-                const amp = isSpoiled ? 32 : 14;
+                // Wave lines
+                const isWarning = isSpoiled;
+                const strokeColor = isWarning ? 'rgba(244, 63, 94, 0.85)' : 'rgba(16, 185, 129, 0.85)';
+                const fillColor = isWarning ? 'rgba(244, 63, 94, 0.08)' : 'rgba(16, 185, 129, 0.08)';
 
-                const noise = isSpoiled ? (Math.random() - 0.5) * 8 : 0;
-                const y = midY + Math.sin(x * freq1 + phase) * amp + Math.cos(x * freq2 - phase) * (amp * 0.4) + noise;
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height / 2);
 
-                if (x === 0) {
-                    ctx.moveTo(x, y);
-                } else {
+                for (let x = 0; x < canvas.width; x++) {
+                    const decayFactor = isSpoiled ? 2.8 : 1.0;
+                    const y = (canvas.height / 2) +
+                        Math.sin(x * 0.03 + phase) * 16 * decayFactor +
+                        Math.sin(x * 0.015 - phase * 0.5) * 22 +
+                        Math.cos(x * 0.06 + phase * 1.5) * 8;
+
                     ctx.lineTo(x, y);
                 }
+
+                ctx.strokeStyle = strokeColor;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Fill under curve
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.lineTo(0, canvas.height);
+                ctx.closePath();
+                ctx.fillStyle = fillColor;
+                ctx.fill();
+
+                phase += 0.035;
+                animationFrameId = requestAnimationFrame(draw);
             }
-            ctx.stroke();
-            ctx.shadowBlur = 0;
 
-            phase += isSpoiled ? 0.15 : 0.04;
-            requestAnimationFrame(renderOscilloscope);
-        }
-        renderOscilloscope();
-
-        /* ================= TERMINAL LOGS & MODALS ================= */
-        const initialLogs = [
-            `[INIT] Eco-Sense Core Firmware v4.8.2 booted.`,
-            `[NET] Synced with decentralized gateway: api.pratheek.app`,
-            `[SENSOR] Ingested optical VOC matrix: Node-048-KA.`,
-            `[LEDGER] Merkle consensus root verified at Block #19,842,109.`
-        ];
-
-        function logTerminal(message) {
-            const term = document.getElementById('terminal-logs');
-            const time = new Date().toTimeString().split(' ')[0];
-            const p = document.createElement('p');
-            p.innerHTML = `<span class="text-slate-500">[${time}]</span> ${message}`;
-            term.appendChild(p);
-            term.scrollTop = term.scrollHeight;
+            draw();
         }
 
-        // Initialize logs
-        initialLogs.forEach(logTerminal);
-
-        function openLogsModal() {
-            playSound('beep');
-            document.getElementById('logs-modal').classList.remove('hidden');
-        }
-        function closeLogsModal() {
-            document.getElementById('logs-modal').classList.add('hidden');
-        }
-        function clearLogs() {
-            document.getElementById('terminal-logs').innerHTML = '';
-            logTerminal("Terminal buffer cleared by operator.");
-        }
-
-        function openBlockchainModal() {
-            playSound('beep');
-            document.getElementById('blockchain-modal').classList.remove('hidden');
-        }
-        function closeBlockchainModal() {
-            document.getElementById('blockchain-modal').classList.add('hidden');
-        }
-
-        function openCertModal() {
-            playSound('beep');
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('cert-date').innerText = today;
-            document.getElementById('cert-modal').classList.remove('hidden');
-        }
-        function closeCertModal() {
-            document.getElementById('cert-modal').classList.add('hidden');
-        }
-
-        /* ================= CLIPBOARD & TOAST HELPERS ================= */
-        function copyLedgerHash() {
-            const textToCopy = "0x7d28a594efc381902401f41e0a98b762pratheek.app";
-            // Safe fallback method for iFrames without permissions policy
-            const textArea = document.createElement("textarea");
-            textArea.value = textToCopy;
-            document.body.appendChild(textArea);
-            textArea.select();
+        // Clipboard Copy Helper (Safe for iFrame sandboxes)
+        function copyHashToClipboard() {
+            const hashText = document.getElementById('provenance-hash').innerText;
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = hashText;
+            dummy.select();
             try {
-                document.execCommand('copy');
-                showToast("Ledger Hash Copied to Clipboard!", "success");
-                playSound('beep');
+                document.execCommand("copy");
+                showToast("Ledger Hash copied to clipboard!", "success");
+                playTone(1200, 'sine', 0.08);
             } catch (err) {
-                showToast("Clipboard copy failed. Please select manually.", "info");
+                showToast("Unable to copy automatically", "info");
             }
-            document.body.removeChild(textArea);
+            document.body.removeChild(dummy);
         }
 
+        // Toast Notification System
         function showToast(message, type = "info") {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             
-            const colorClass = type === 'error' 
-                ? 'border-red-500/50 bg-red-950/80 text-red-200' 
-                : (type === 'success' ? 'border-emerald-500/50 bg-slate-900/90 text-emerald-300' : 'border-slate-700 bg-slate-900/90 text-slate-200');
+            let borderCls = "border-emerald-500/40 text-emerald-300";
+            let iconCls = "fa-circle-check text-emerald-400";
+            if (type === "danger") {
+                borderCls = "border-rose-500/50 text-rose-300";
+                iconCls = "fa-triangle-exclamation text-rose-400";
+            } else if (type === "warning") {
+                borderCls = "border-amber-500/50 text-amber-300";
+                iconCls = "fa-circle-exclamation text-amber-400";
+            }
 
-            const iconClass = type === 'error' 
-                ? 'fa-triangle-exclamation text-red-400' 
-                : (type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-circle-info text-blue-400');
-
-            toast.className = `glass-card border px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs font-mono pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0 ${colorClass}`;
-            toast.innerHTML = `<i class="fas ${iconClass}"></i><span>${message}</span>`;
+            toast.className = `glass-card pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl border ${borderCls} shadow-xl transition-all duration-300 transform translate-x-12 opacity-0 text-xs font-semibold`;
+            toast.innerHTML = `<i class="fas ${iconCls}"></i> <span>${message}</span>`;
             
             container.appendChild(toast);
 
+            // Animate In
             setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
+                toast.classList.remove('translate-x-12', 'opacity-0');
             }, 10);
 
+            // Animate Out
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-x-4');
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
+                toast.classList.add('translate-x-12', 'opacity-0');
+                setTimeout(() => toast.remove(), 350);
+            }, 3200);
         }
 
-        // Live Simulated Ping & Latency Fluctuations
-        setInterval(() => {
-            const latencyEl = document.getElementById('stat-latency');
-            if (latencyEl) {
-                const lat = Math.floor(Math.random() * 6) + 10;
-                latencyEl.innerText = `${lat}ms`;
+        // Telemetry Feed Logging
+        function appendLog(text) {
+            const terminal = document.getElementById('terminal-feed');
+            if (!terminal) return;
+            const entry = document.createElement('div');
+            const now = new Date().toTimeString().split(' ')[0];
+            entry.innerHTML = `<span class="text-slate-600">[${now}]</span> ${text}`;
+            terminal.appendChild(entry);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function clearLogs() {
+            const terminal = document.getElementById('terminal-feed');
+            if (terminal) {
+                terminal.innerHTML = `<div class="text-emerald-400/90">[LOG_RESET] Terminal memory purged. Node connection nominal at pratheek.app.</div>`;
             }
-        }, 4000);
+        }
+
+        // Continuous Simulated Heartbeat
+        setInterval(() => {
+            const rand = Math.floor(Math.random() * 5);
+            if (rand === 0) {
+                appendLog(`[HEARTBEAT] Node 048 ping verified: ${(11 + Math.random() * 4).toFixed(1)}ms. Hash verification synced.`);
+            } else if (rand === 1) {
+                const livePeak = (0.12 + Math.random() * 0.05).toFixed(2);
+                document.getElementById('absorbance-val').innerText = `${livePeak} AU @ 740nm`;
+            }
+        }, 5500);
+
+        // Window Lifecycle initialization
+        window.onload = function () {
+            initSpectrogram();
+            loadSamplePreset('banana-fresh');
+            appendLog(`[BOOT_COMPLETE] Eco-Sense v4.2 initialized. Ecosystem verified via pratheek.app infrastructure.`);
+        };
     </script>
 </body>
 </html>
